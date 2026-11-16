@@ -1,4 +1,8 @@
 [build]
   publish = "public"
+
+[server]
+  path = ["/api/*", "/ws"]
+
 [build.environment]
   NODE_VERSION = "24"

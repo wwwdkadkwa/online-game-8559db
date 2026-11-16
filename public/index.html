@@ -6,20 +6,50 @@
 <title>ShiftLab Performance — Online Racing</title>
 </head>
 <body>
+<div id="accountGate" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
+  <div class="accountPanel">
+    <p class="accountBrand">SHIFTLAB PERFORMANCE</p>
+    <h1 id="accountTitle">Welcome, driver</h1>
+    <p id="accountIntro">Sign in to your account, or sign up to create one and keep your progress.</p>
+    <div id="accountChoices">
+      <button type="button" id="accountSignInChoice">Sign in</button>
+      <button type="button" id="accountSignUpChoice">Sign up</button>
+    </div>
+    <form id="accountForm" hidden>
+      <input id="accountUsername" name="username" type="text" autocomplete="username" maxlength="24" placeholder="Username" required>
+      <input id="accountPassword" name="password" type="password" autocomplete="current-password" maxlength="128" placeholder="Password" required>
+      <div id="accountMessage" role="status"></div>
+      <div class="accountActions">
+        <button type="submit" id="accountSubmit">Sign in</button>
+        <button type="button" id="accountBack">Back</button>
+      </div>
+    </form>
+    <p class="accountHint">Sign up with a username and password. No email required.</p>
+  </div>
+</div>
 <div id="onlineGate" role="status" style="position:fixed;inset:0;z-index:90;display:grid;place-items:center;background:rgba(8,12,19,.95);color:#e8efff;font:16px system-ui;padding:24px;text-align:center">
   <div style="max-width:450px"><p style="color:#8cfaaf;letter-spacing:.2em;font-size:12px">SHIFTLAB PERFORMANCE</p><h1>Built to drive together.</h1><p id="onlineGateText">Connecting to the race server. An internet connection is required to play.</p><button type="button" id="onlineRetry" style="padding:12px 24px;border:0;border-radius:8px;background:#8cfaaf;color:#102016;font-weight:700;cursor:pointer">Retry connection</button></div>
 </div>
 
 <script>
-/* Persistent saves use a private, anonymous browser session on Netlify. */
+/* Saves wait until a player account is authenticated. */
 window.root = window.root || {};
 const sessionReady = fetch('/api/session', { method: 'POST' }).then(r => { if (!r.ok) throw Error('Connection required'); });
+window.anonymousSessionReady = sessionReady;
+let resolvePlayerAuth;
+window.playerAccount = null;
+window.playerAuthReady = new Promise(resolve => { resolvePlayerAuth = resolve; });
+window.resolvePlayerAuth = username => {
+  if (!username || window.playerAccount) return;
+  window.playerAccount = { username };
+  resolvePlayerAuth(window.playerAccount);
+};
 root.kv = new Proxy({}, {
   get(_target, namespace) {
     const address = key => '/api/save?namespace=' + encodeURIComponent(namespace) + '&key=' + encodeURIComponent(key);
     return {
-      async get(key) { await sessionReady; const r = await fetch(address(key)); if (!r.ok) throw Error('Could not load save'); return r.json(); },
-      async set(key, value) { await sessionReady; const r = await fetch(address(key), {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(value)}); if (!r.ok) throw Error('Could not save progress'); return value; }
+      async get(key) { await window.playerAuthReady; await sessionReady; const r = await fetch(address(key)); if (!r.ok) throw Error('Could not load save'); return r.json(); },
+      async set(key, value) { await window.playerAuthReady; await sessionReady; const r = await fetch(address(key), {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(value)}); if (!r.ok) throw Error('Could not save progress'); return value; }
     };
   }
 });
@@ -27,6 +57,22 @@ root.kv = new Proxy({}, {
 
 <style>
   html, body { margin: 0; padding: 0; height: 100%; background: #10141a; overflow: hidden; text-align: center; }
+  #accountGate { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px; background: rgba(8,12,19,.98); color: #e8efff; font: 15px system-ui, sans-serif; }
+  .accountPanel { width: min(420px, 92vw); box-sizing: border-box; display: flex; flex-direction: column; gap: 14px; padding: 30px 26px; border: 1px solid rgba(127,208,255,.25); border-radius: 18px; background: #111a24; box-shadow: 0 24px 80px rgba(0,0,0,.7); }
+  .accountBrand { margin: 0; color: #8cfaaf; font: 700 10px/1.3 ui-monospace, Menlo, monospace; letter-spacing: .22em; }
+  .accountPanel h1 { margin: 0; color: #eaf2ff; font: 800 24px/1.2 system-ui, sans-serif; }
+  #accountIntro, .accountHint { margin: 0; color: #9cabc0; font-size: 13px; line-height: 1.5; }
+  #accountChoices, #accountForm, .accountActions { display: flex; flex-direction: column; gap: 10px; }
+  #accountForm[hidden] { display: none; }
+  #accountGate input { box-sizing: border-box; width: 100%; padding: 12px 14px; border: 1px solid rgba(127,208,255,.24); border-radius: 8px; background: #0c131b; color: #eaf2ff; font: 14px system-ui, sans-serif; }
+  #accountGate input:focus { outline: none; border-color: #7fd0ff; box-shadow: 0 0 0 2px rgba(127,208,255,.15); }
+  #accountGate button { padding: 12px 16px; border: 1px solid rgba(127,208,255,.28); border-radius: 8px; background: #1a2a39; color: #eaf2ff; font: 700 13px system-ui, sans-serif; cursor: pointer; }
+  #accountGate button:hover { border-color: #7fd0ff; background: #223b50; }
+  #accountGate #accountSubmit, #accountGate #accountSignUpChoice { background: #8cfaaf; border-color: #8cfaaf; color: #102016; }
+  #accountGate #accountSubmit:hover, #accountGate #accountSignUpChoice:hover { background: #a7ffc2; }
+  #accountMessage { min-height: 18px; color: #ff9a9a; font-size: 12px; }
+  #accountIdentity { color: #8cfaaf; font-size: 11px; }
+  #accountLogoutBtn { padding: 6px 10px; }
   #wrap { position: fixed; inset: 0; }
   canvas { display: block; width: 100%; height: 100%; }
   #bottom {
@@ -227,42 +273,47 @@ root.kv = new Proxy({}, {
   }
   #admin.open { display: flex; }
   #admin .panel {
-    width: min(560px, 94vw); max-height: 94vh; overflow: auto;
-    display: flex; flex-direction: column; gap: 16px; align-items: center;
-    padding: 26px 26px 22px; border-radius: 22px;
-    background: rgba(20,15,6,.9); border: 1px solid rgba(255,216,107,.24);
-    box-shadow: 0 26px 90px rgba(0,0,0,.7);
+    width: min(820px, 94vw); max-height: 94vh; overflow: auto;
+    display: flex; flex-direction: column; gap: 13px; align-items: stretch;
+    padding: 24px; border-radius: 16px; text-align: left;
+    background: rgba(12,18,26,.98); border: 1px solid rgba(127,208,255,.2);
+    box-shadow: 0 26px 90px rgba(0,0,0,.72);
   }
-  #admin h1 { font: 800 22px/1 ui-monospace, Menlo, monospace; letter-spacing: .34em; margin: 0 0 -4px; color: #ffe9b0; }
-  #admin h1 span { color: #ffd86b; }
-  #adminBank { display: flex; align-items: baseline; gap: 10px; justify-content: center; }
-  #adminBank b { font-size: 32px; letter-spacing: .04em; color: #ffd86b; font-variant-numeric: tabular-nums; text-shadow: 0 0 22px rgba(255,216,107,.4); }
-  #adminBank span { font: 700 10px/1 ui-monospace, Menlo, monospace; letter-spacing: .3em; color: #8a7a52; }
-  #admin .arow { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; }
+  #admin h1 { font: 800 18px/1 ui-monospace, Menlo, monospace; letter-spacing: .2em; margin: 0; color: #eaf2ff; }
+  #admin h1 span { color: #7fd0ff; }
+  #adminBank { display: flex; align-items: baseline; gap: 10px; justify-content: flex-start; }
+  #adminBank b { font-size: 26px; letter-spacing: .04em; color: #8cfaaf; font-variant-numeric: tabular-nums; }
+  #adminBank span { font: 700 9px/1 ui-monospace, Menlo, monospace; letter-spacing: .2em; color: #8292a5; }
+  #adminHead { width: 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(127,208,255,.16); }
+  #adminServerStatus { font: 700 10px/1.4 ui-monospace, Menlo, monospace; letter-spacing: .12em; color: #8cfaaf; }
+  #adminPlayerCount { color: #8cfaaf; letter-spacing: .08em; }
+  #admin .arow { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start; align-items: center; }
   #admin button {
-    font: 600 11px/1 ui-monospace, Menlo, Consolas, monospace; letter-spacing: .05em; color: #e6d8b4;
-    background: rgba(30,22,8,.7); border: 1px solid rgba(255,216,107,.24); padding: 8px 13px;
-    border-radius: 999px; cursor: pointer; white-space: nowrap;
+    font: 600 11px/1 ui-monospace, Menlo, Consolas, monospace; letter-spacing: .04em; color: #d7e5f4;
+    background: rgba(24,36,49,.8); border: 1px solid rgba(127,208,255,.2); padding: 9px 13px;
+    border-radius: 7px; cursor: pointer; white-space: nowrap;
     transition: color .12s, border-color .12s, background .12s;
   }
-  #admin button:hover { border-color: rgba(255,216,107,.8); color: #fff3d0; background: rgba(52,38,12,.8); }
+  #admin button:hover { border-color: rgba(127,208,255,.8); color: #fff; background: rgba(33,54,72,.9); }
+  #admin #adminLogout { color: #ffb8b8; border-color: rgba(255,128,128,.25); }
+  #admin #adminLogout:hover { border-color: rgba(255,128,128,.75); background: rgba(65,30,35,.8); }
   #admin input {
-    font: 600 12px/1 ui-monospace, Menlo, monospace; color: #fff3d0; background: rgba(30,22,8,.7);
-    border: 1px solid rgba(255,216,107,.28); border-radius: 999px; padding: 8px 13px; width: 160px;
-    text-align: center;
+    font: 600 12px/1 ui-monospace, Menlo, monospace; color: #eaf2ff; background: rgba(18,28,39,.9);
+    border: 1px solid rgba(127,208,255,.22); border-radius: 7px; padding: 9px 12px; width: 160px;
+    text-align: left;
   }
   #admin select {
-    font: 600 12px/1 ui-monospace, Menlo, monospace; color: #fff3d0; background: rgba(30,22,8,.9);
-    border: 1px solid rgba(255,216,107,.28); border-radius: 999px; padding: 8px 13px; max-width: 200px;
+    font: 600 12px/1 ui-monospace, Menlo, monospace; color: #eaf2ff; background: rgba(18,28,39,.9);
+    border: 1px solid rgba(127,208,255,.22); border-radius: 7px; padding: 9px 12px; max-width: 200px;
   }
   #admin .asec {
-    font: 700 10px/1 ui-monospace, Menlo, monospace; letter-spacing: .3em; color: #8a7a52;
-    margin-top: 4px;
+    font: 700 10px/1 ui-monospace, Menlo, monospace; letter-spacing: .18em; color: #8292a5;
+    margin-top: 4px; padding-bottom: 7px; border-bottom: 1px solid rgba(255,255,255,.07);
   }
-  #adminNote, #adminGiftNote { font: 600 10px/1.5 ui-monospace, Menlo, monospace; letter-spacing: .05em; color: #8a7a52; max-width: 92%; }
+  #adminNote, #adminGiftNote { font: 600 10px/1.5 ui-monospace, Menlo, monospace; letter-spacing: .04em; color: #8292a5; max-width: 92%; }
   #cameraTools { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 35; padding: 12px 16px; border: 1px solid #8a7a52; border-radius: 12px; background: rgba(20,15,6,.96); color: #ffe9b0; text-align: center; font: 600 12px/1.6 ui-monospace, Menlo, monospace; max-width: 90vw; }
   #cameraTools button { padding: 8px 12px; background: #34260c; color: #ffe9b0; border: 1px solid #8a7a52; border-radius: 6px; cursor: pointer; touch-action: none; }
-  /* access-code gate in front of the admin panel */
+  /* private sign-in gate for the admin panel */
   #gate {
     position: fixed; inset: 0; z-index: 26; display: none; align-items: center; justify-content: center;
     background: radial-gradient(120% 120% at 50% 38%, rgba(4,10,16,.82), rgba(2,5,9,.96));
@@ -281,8 +332,8 @@ root.kv = new Proxy({}, {
   #gateMsg.wrong { color: #ff8080; }
   #gate .arow { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; }
   #gate input {
-    font: 700 14px/1 ui-monospace, Menlo, monospace; letter-spacing: .28em; text-align: center;
-    text-transform: uppercase; color: #eaf2ff; background: rgba(10,20,30,.8);
+    font: 600 13px/1 ui-monospace, Menlo, monospace; letter-spacing: .06em; text-align: center;
+    color: #eaf2ff; background: rgba(10,20,30,.8);
     border: 1px solid rgba(127,208,255,.3); border-radius: 999px; padding: 10px 16px; width: 180px;
   }
   #gate input:focus { outline: none; border-color: #7fd0ff; box-shadow: 0 0 18px rgba(127,208,255,.35); }
@@ -293,9 +344,6 @@ root.kv = new Proxy({}, {
   }
   #gate button:hover { border-color: #7fd0ff; background: rgba(20,40,58,.85); }
   #gateNote { font: 600 10px/1.5 ui-monospace, Menlo, monospace; letter-spacing: .06em; color: #5c6b7d; }
-  @keyframes denied { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-8px); } 40% { transform: translateX(7px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(3px); } }
-  #gate .panel.deny { animation: denied .38s; border-color: rgba(255,128,128,.7); }
-  #gate .panel.granted { animation: bought .7s; border-color: rgba(110,240,138,.8); }
   /* first-load name prompt (same look as the access gate) */
   #nameGate {
     position: fixed; inset: 0; z-index: 27; display: none; align-items: center; justify-content: center;
@@ -606,7 +654,7 @@ root.kv = new Proxy({}, {
         </div>
       </div>
     </div>
-    <div id="econNote">Drift to earn cash (banked points pay out <b>$1 each</b>) and finish races for prize money. Buy cars, engines, turbos and nitrous below &mdash; or <b>rent</b> a locked one for <b>5 races</b>. The <b>F1 championship</b> requires an F1 car and the F1 V6 Hybrid. Press <b>=</b> and enter the access code for the money panel.</div>
+    <div id="econNote">Drift to earn cash (banked points pay out <b>$1 each</b>) and finish races for prize money. Buy cars, engines, turbos and nitrous below &mdash; or <b>rent</b> a locked one for <b>5 races</b>. The <b>F1 championship</b> requires an F1 car and the F1 V6 Hybrid. Press <b>F2</b> for the private admin console.</div>
     <button id="driveBtn">Drive</button>
     <div class="keys">W throttle &nbsp;·&nbsp; S brake &nbsp;·&nbsp; A / D steer &nbsp;·&nbsp; <b>SPACE handbrake</b> &nbsp;·&nbsp; I ignition<br><b>DRAG</b> — manual box: <b>E</b> shift up &nbsp;·&nbsp; <b>Q</b> shift down &nbsp;·&nbsp; <b>R</b> reset &nbsp;·&nbsp; <b>B</b> nitrous</div>
     <div class="row" id="mpRow">
@@ -615,6 +663,8 @@ root.kv = new Proxy({}, {
         <input id="mpNameInput" type="text" maxlength="14" autocomplete="off" spellcheck="false" placeholder="enter your name">
         <button id="mpJoinBtn">Go online</button>
         <span id="mpStatus">offline</span>
+        <span id="accountIdentity"></span>
+        <button type="button" id="accountLogoutBtn">Sign out</button>
       </div>
       <div id="mpNote">Cruise the skid pad with everyone else in real time &mdash; type a name and go online.</div>
     </div>
@@ -625,13 +675,14 @@ root.kv = new Proxy({}, {
 <div id="announcement" role="status" hidden><b>ANNOUNCEMENT</b><span></span></div>
 <div id="gate">
   <div class="panel">
-    <h1>RESTRICTED<span>.</span></h1>
-    <div id="gateMsg">Enter the access code.</div>
+    <h1>ADMIN<span> SIGN IN</span></h1>
+    <div id="gateMsg">Sign in to your private admin account.</div>
     <div class="arow">
-      <input id="gateInput" type="password" autocomplete="off" spellcheck="false" maxlength="24" placeholder="access code">
-      <button id="gateBtn">Unlock</button>
+      <input id="gateUsername" type="text" autocomplete="username" spellcheck="false" maxlength="128" placeholder="username">
+      <input id="gatePassword" type="password" autocomplete="current-password" maxlength="128" placeholder="password">
+      <button id="gateBtn">Sign in</button>
     </div>
-    <div id="gateNote">Hint: two letters for an overpowered build.</div>
+    <div id="gateNote">Private server control panel</div>
   </div>
 </div>
 <div id="nameGate">
@@ -657,8 +708,12 @@ root.kv = new Proxy({}, {
 </div>
 <div id="admin">
   <div class="panel">
-    <h1>MONEY<span>.</span></h1>
-    <div id="adminBank"><b id="adminCashVal">$0</b><span>ADMIN PANEL</span></div>
+    <h1>SHIFTLAB<span> ADMIN</span></h1>
+    <div id="adminHead">
+      <div id="adminBank"><b id="adminCashVal">$0</b><span>YOUR LOCAL PROFILE</span></div>
+      <div id="adminServerStatus">PRIVATE ADMIN · SERVER OFFLINE</div>
+      <button id="adminLogout">Sign out</button>
+    </div>
     <div class="arow">
       <button data-add="1000">+$1K</button>
       <button data-add="10000">+$10K</button>
@@ -686,7 +741,7 @@ root.kv = new Proxy({}, {
       <button id="adminReturnCam">Return to car</button>
       <button id="adminRecover">Recover my vehicle</button>
     </div>
-    <div class="asec">PLAYERS ONLINE</div>
+    <div class="asec">PLAYERS ONLINE <span id="adminPlayerCount">0</span></div>
     <div class="arow">
       <select id="adminGiftWho" aria-label="Online player"></select>
       <button id="adminTeleportBtn">Teleport to player</button>
@@ -705,13 +760,25 @@ root.kv = new Proxy({}, {
       <button id="adminReset">Reset to fresh</button>
       <button id="adminClose">Close</button>
     </div>
-    <div id="adminNote">Cheat panel &mdash; press <b>F2</b> to toggle. Hand out cash, cars, engines, turbos and nitrous instantly.</div>
+    <div id="adminNote">Private admin console · press <b>F2</b> to open</div>
   </div>
 </div>
 
 <script type="module">
 const c = document.getElementById("c");
 const ctx = c.getContext("2d");
+const accountGateEl = document.getElementById("accountGate");
+const accountFormEl = document.getElementById("accountForm");
+const accountChoicesEl = document.getElementById("accountChoices");
+const accountUsernameEl = document.getElementById("accountUsername");
+const accountPasswordEl = document.getElementById("accountPassword");
+const accountMessageEl = document.getElementById("accountMessage");
+const accountIntroEl = document.getElementById("accountIntro");
+const accountSubmitEl = document.getElementById("accountSubmit");
+const accountIdentityEl = document.getElementById("accountIdentity");
+let accountSignupMode = false;
+let accountSubmitting = false;
+let previousPlayerUsername = null;
 const menuEl = document.getElementById("menu");
 const menuBtn = document.getElementById("menuBtn");
 const driveBtn = document.getElementById("driveBtn");
@@ -755,7 +822,8 @@ const adminGiftCashEl = document.getElementById("adminGiftCash");
 const adminGiftCarEl = document.getElementById("adminGiftCar");
 const adminGiftNoteEl = document.getElementById("adminGiftNote");
 const gateEl = document.getElementById("gate");
-const gateInput = document.getElementById("gateInput");
+const gateUsername = document.getElementById("gateUsername");
+const gatePassword = document.getElementById("gatePassword");
 const gateMsgEl = document.getElementById("gateMsg");
 const dEtEl = document.getElementById("dEt");
 const dRtEl = document.getElementById("dRt");
@@ -1138,6 +1206,10 @@ addEventListener("keydown", (e) => {
     }
     return;
   }
+  if (!window.playerAccount) {
+    if (["w", "a", "s", "d", " ", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(k)) e.preventDefault();
+    return;
+  }
   if (["w", "a", "s", "d", " ", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(k)) e.preventDefault();
   const wasDown = keys[k];
   keys[k] = true;
@@ -1168,7 +1240,7 @@ addEventListener("keydown", (e) => {
     e.preventDefault();
     if (adminEl.classList.contains("open")) adminEl.classList.remove("open");
     else if (gateEl.classList.contains("open")) toggleGate(false);
-    else toggleGate(true);
+    else openAdminPanel();
     return;
   }
   if (k === "escape" && !wasDown && gateEl.classList.contains("open")) { toggleGate(false); return; }
@@ -1211,8 +1283,10 @@ addEventListener("blur", () => { for (const k of Object.keys(keys)) keys[k] = fa
 document.getElementById("adminClose").addEventListener("click", () => toggleAdmin(false));
 adminEl.addEventListener("click", (e) => { if (e.target === adminEl) toggleAdmin(false); });
 document.getElementById("gateBtn").addEventListener("click", submitGate);
-gateInput.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); submitGate(); } });
+gateUsername.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); gatePassword.focus(); } });
+gatePassword.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); submitGate(); } });
 gateEl.addEventListener("click", (e) => { if (e.target === gateEl) toggleGate(false); });
+document.getElementById("adminLogout").addEventListener("click", adminLogout);
 
 const engBtns = [], engRentBtns = [];
 ENGINES.forEach((E, i) => {
@@ -1808,59 +1882,90 @@ function ensureSceneValid() {
   return false;
 }
 
-/* ---- `F2` money/admin panel (a cheat console, behind an access code) ----
-   The code is checked against a SHA-256 hash so it isn't sitting in plain sight
-   in the generator source. It's local convenience, not real security — the whole
-   panel is client-side and reachable from the console by anyone determined. */
-const ACCESS_CODE_SHA256 = "a399c57010818bc87024f8aeb892b31997791740079c32f5c417615a045b9fde";
+/* ---- `F2` private admin console ---- */
 let gateBusy = false;
-async function sha256Hex(str) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
-  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
-}
+let adminAuthenticated = false;
 function toggleGate(force) {
   const willOpen = force != null ? force : !gateEl.classList.contains("open");
   gateEl.classList.toggle("open", willOpen);
   if (willOpen) {
     gateBusy = false;
-    gateMsgEl.textContent = "Enter the access code.";
+    gateMsgEl.textContent = "Sign in to your private admin account.";
     gateMsgEl.classList.remove("wrong");
-    gateInput.value = "";
-    setTimeout(() => gateInput.focus(), 30);
-  } else if (document.activeElement === gateInput) gateInput.blur();
+    gateUsername.value = "";
+    gatePassword.value = "";
+    setTimeout(() => gateUsername.focus(), 30);
+  } else if (document.activeElement === gateUsername || document.activeElement === gatePassword) document.activeElement.blur();
 }
 async function submitGate() {
   if (gateBusy) return;
-  const v = (gateInput.value || "").trim().toLowerCase();
-  if (!v) return;
-  let ok = false;
-  try { ok = (await sha256Hex(v)) === ACCESS_CODE_SHA256; } catch (e) { ok = false; }
-  const panel = gateEl.querySelector(".panel");
-  if (ok) {
-    gateBusy = true;
-    panel.classList.remove("deny"); panel.classList.add("granted");
-    gateMsgEl.textContent = "Access granted.";
-    gateMsgEl.classList.remove("wrong");
-    setTimeout(() => {
-      panel.classList.remove("granted");
-      toggleGate(false);
-      adminEl.classList.add("open");
-      if (adminCashValEl) adminCashValEl.textContent = money(cash);
-      refreshAdminGift();
-      showToast("Money panel unlocked.");
-    }, 220);
-  } else {
-    panel.classList.remove("deny"); void panel.offsetWidth; panel.classList.add("deny");
-    gateMsgEl.textContent = "Wrong code.";
+  if (!gateUsername.value || !gatePassword.value) {
+    gateMsgEl.textContent = "Enter both your username and password.";
     gateMsgEl.classList.add("wrong");
-    gateInput.value = "";
-    gateInput.focus();
+    return;
+  }
+  gateBusy = true;
+  gateMsgEl.textContent = "Checking sign-in…";
+  gateMsgEl.classList.remove("wrong");
+  const button = document.getElementById("gateBtn");
+  button.disabled = true;
+  try {
+    const response = await fetch("/api/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: gateUsername.value, password: gatePassword.value })
+    });
+    if (!response.ok) {
+      let message = "Incorrect username or password.";
+      try { message = (await response.json()).error || message; } catch {}
+      throw new Error(message);
+    }
+    adminAuthenticated = true;
+    gatePassword.value = "";
+    toggleGate(false);
+    toggleAdmin(true);
+    if (mpSocket) mpSocket.close(4000, "admin sign-in changed");
+    showToast("Admin sign-in successful.");
+  } catch (error) {
+    gateMsgEl.textContent = error.message || "Admin sign-in failed.";
+    gateMsgEl.classList.add("wrong");
+    gatePassword.value = "";
+    gatePassword.focus();
+  } finally {
+    gateBusy = false;
+    button.disabled = false;
   }
 }
 function toggleAdmin(force) {
-  const willOpen = force != null ? force : !adminEl.classList.contains("open");
-  if (!willOpen) { adminEl.classList.remove("open"); return; }
-  toggleGate(true);
+  if (force === false) { adminEl.classList.remove("open"); return; }
+  if (!adminAuthenticated) { toggleGate(true); return; }
+  adminEl.classList.add("open");
+  if (adminCashValEl) adminCashValEl.textContent = money(cash);
+  refreshAdminGift();
+}
+async function openAdminPanel() {
+  try {
+    const response = await fetch("/api/admin/status", { cache: "no-store" });
+    if (!response.ok) throw new Error("Admin sign-in service unavailable.");
+    const status = await response.json();
+    adminAuthenticated = status.authenticated === true;
+  } catch (error) {
+    adminAuthenticated = false;
+    showToast(error.message || "Admin sign-in service unavailable.");
+  }
+  toggleAdmin(true);
+}
+async function adminLogout() {
+  try {
+    const response = await fetch("/api/admin/logout", { method: "POST" });
+    if (!response.ok) throw new Error("Could not sign out.");
+    adminAuthenticated = false;
+    toggleAdmin(false);
+    if (mpSocket) mpSocket.close(4000, "admin signed out");
+    showToast("Signed out of admin.");
+  } catch (error) {
+    showToast(error.message || "Could not sign out.");
+  }
 }
 function toggleMenu(force) {
   const willOpen = force != null ? force : !menuEl.classList.contains("open");
@@ -4525,7 +4630,7 @@ function mpSocketUrl() {
 }
 
 function mpJoin() {
-  if (mpSocket || mpStatus === "kicked") return;
+  if (!window.playerAccount || mpSocket || mpStatus === "kicked") return;
   const name = mpSanitizeName(mpNameInputEl ? mpNameInputEl.value : mpName) || mpName || "Racer";
   mpName = name;
   if (mpNameInputEl) mpNameInputEl.value = name;
@@ -4576,6 +4681,17 @@ function mpJoin() {
 
   sock.addEventListener("close", (ev) => {
     if (mpSocket !== sock) return;
+    if (ev.code === 4002) {
+      mpSocket = null;
+      mpPid = 0;
+      mpClearPeers();
+      previousPlayerUsername = window.playerAccount && window.playerAccount.username;
+      window.playerAccount = null;
+      accountIdentityEl.textContent = "";
+      showAccountGate("Signed out. Sign in again or create a new account.");
+      mpSetStatus("offline");
+      return;
+    }
     if (ev.code === 4001) {
       mpLeave();
       mpSetStatus("kicked");
@@ -4585,7 +4701,21 @@ function mpJoin() {
     }
     mpPid = 0;
     mpClearPeers();
-    retry();
+    fetch("/api/account/status", { cache: "no-store" }).then(async (response) => {
+      if (!response.ok) throw new Error("Could not verify account session");
+      return response.json();
+    }).then((account) => {
+      if (mpSocket !== sock) return;
+      if (account.authenticated) retry();
+      else {
+        mpSocket = null;
+        previousPlayerUsername = window.playerAccount && window.playerAccount.username;
+        window.playerAccount = null;
+        accountIdentityEl.textContent = "";
+        showAccountGate("Your sign-in expired. Sign in again to continue.");
+        mpSetStatus("offline");
+      }
+    }).catch(() => retry());
   });
 
   refreshMpUI();
@@ -4623,6 +4753,14 @@ function mpHandle(data) {
   }
   if (tag === 75 /* K — kick result */) {
     showToast(data.split("|")[1] === "ok" ? "Player kicked from the room." : "That player is no longer online.");
+    return;
+  }
+  if (tag === 88 /* X — admin authorization required */) {
+    adminAuthenticated = false;
+    adminEl.classList.remove("open");
+    toggleGate(true);
+    gateMsgEl.textContent = data.slice(2) || "Admin sign-in required.";
+    gateMsgEl.classList.add("wrong");
     return;
   }
   if (tag === 80 /* P — bring player */) {
@@ -4877,6 +5015,9 @@ function mpStageDrag() {
 function refreshAdminGift() {
   if (!adminGiftWhoEl) return;
   const live = mpStatus === "online" || mpStatus === "connecting";
+  document.getElementById("adminPlayerCount").textContent = String(mpRoster.size + (mpStatus === "online" ? 1 : 0));
+  document.getElementById("adminServerStatus").textContent = "PRIVATE ADMIN · SERVER " +
+    (mpStatus === "online" ? "ONLINE" : mpStatus === "connecting" ? "CONNECTING" : "OFFLINE");
   const prev = adminGiftWhoEl.value;
   let opts = "";
   if (mpRoster.size === 0) opts = '<option value="">' + (live ? "no other players" : "offline") + "</option>";
@@ -5148,6 +5289,111 @@ function loadMpName() {
     }).catch(() => { if (!mpNameSet) openNameGate(); });
   } catch (e) { openNameGate(); }
 }
+function showAccountGate(message) {
+  accountGateEl.style.display = "grid";
+  accountChoicesEl.hidden = false;
+  accountFormEl.hidden = true;
+  accountPasswordEl.value = "";
+  accountMessageEl.textContent = "";
+  accountIntroEl.textContent = message || "Sign in to your account, or sign up to create one and keep your progress.";
+}
+function setAccountMode(signup) {
+  accountSignupMode = signup;
+  accountChoicesEl.hidden = true;
+  accountFormEl.hidden = false;
+  accountPasswordEl.value = "";
+  accountIntroEl.textContent = signup
+    ? "Create your account with a username and password."
+    : "Sign in to load your saved progress.";
+  accountPasswordEl.autocomplete = signup ? "new-password" : "current-password";
+  accountPasswordEl.minLength = signup ? 8 : 0;
+  accountSubmitEl.textContent = signup ? "Create account" : "Sign in";
+  accountMessageEl.textContent = "";
+  accountUsernameEl.focus();
+}
+function acceptPlayerAccount(username) {
+  if (previousPlayerUsername && previousPlayerUsername !== username) {
+    location.reload();
+    return;
+  }
+  previousPlayerUsername = null;
+  window.resolvePlayerAuth(username);
+  accountIdentityEl.textContent = "SIGNED IN · " + username;
+  accountGateEl.style.display = "none";
+  mpJoin();
+  showToast("Welcome, " + mpEsc(username) + ".");
+}
+async function readAccountResponse(response, fallbackMessage) {
+  let result;
+  try { result = await response.json(); } catch {
+    throw new Error("Sign-in is temporarily unavailable. Please try again later.");
+  }
+  if (!response.ok) throw new Error(result?.error || fallbackMessage);
+  return result;
+}
+async function submitAccountForm(event) {
+  event.preventDefault();
+  if (accountSubmitting) return;
+  const username = accountUsernameEl.value.trim();
+  const password = accountPasswordEl.value;
+  if (!/^[A-Za-z0-9_]{3,24}$/.test(username)) {
+    accountMessageEl.textContent = "Use 3–24 letters, numbers, or underscores for your username.";
+    return;
+  }
+  if (accountSignupMode && password.length < 8) {
+    accountMessageEl.textContent = "Use a password with at least 8 characters.";
+    return;
+  }
+
+  accountSubmitting = true;
+  accountSubmitEl.disabled = true;
+  accountMessageEl.textContent = "Please wait…";
+  try {
+    await window.anonymousSessionReady;
+    const response = await fetch("/api/account/" + (accountSignupMode ? "signup" : "login"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+    const result = await readAccountResponse(response, "Could not sign in.");
+    accountPasswordEl.value = "";
+    acceptPlayerAccount(result.username);
+  } catch (error) {
+    accountMessageEl.textContent = error.message || "Account service unavailable.";
+  } finally {
+    accountSubmitting = false;
+    accountSubmitEl.disabled = false;
+  }
+}
+async function restorePlayerAccount() {
+  try {
+    const response = await fetch("/api/account/status", { cache: "no-store" });
+    const result = await readAccountResponse(response, "Could not verify account session.");
+    if (window.playerAccount || accountSubmitting) return;
+    if (result.authenticated) acceptPlayerAccount(result.username);
+    else showAccountGate();
+  } catch (error) {
+    if (window.playerAccount || accountSubmitting) return;
+    showAccountGate(error.message || "Account service unavailable.");
+  }
+}
+async function signOutPlayer() {
+  const button = document.getElementById("accountLogoutBtn");
+  button.disabled = true;
+  try {
+    const response = await fetch("/api/account/logout", { method: "POST" });
+    if (!response.ok) throw new Error("Could not sign out.");
+    location.reload();
+  } catch (error) {
+    button.disabled = false;
+    showToast(error.message || "Could not sign out.");
+  }
+}
+document.getElementById("accountSignInChoice").addEventListener("click", () => setAccountMode(false));
+document.getElementById("accountSignUpChoice").addEventListener("click", () => setAccountMode(true));
+document.getElementById("accountBack").addEventListener("click", () => showAccountGate());
+accountFormEl.addEventListener("submit", submitAccountForm);
+document.getElementById("accountLogoutBtn").addEventListener("click", signOutPlayer);
 document.getElementById('onlineRetry').addEventListener('click', () => {
   mpLeave(); mpJoin();
 });
@@ -5172,6 +5418,7 @@ updateCashHud();
 refreshEconomyUI();
 loadEconomy();
 requestAnimationFrame(frame);
+restorePlayerAccount();
 </script>
 
 </body>
