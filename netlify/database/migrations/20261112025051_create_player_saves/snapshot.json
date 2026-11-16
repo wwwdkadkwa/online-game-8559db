@@ -1,0 +1,81 @@
+{
+  "version": "8",
+  "dialect": "postgres",
+  "id": "017843d7-73f8-4b2b-bdc0-ff8e3e52e433",
+  "prevIds": [
+    "00000000-0000-0000-0000-000000000000"
+  ],
+  "ddl": [
+    {
+      "isRlsEnabled": false,
+      "name": "saves",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "player_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "saves"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "namespace",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "saves"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "key",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "saves"
+    },
+    {
+      "type": "jsonb",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "value",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "saves"
+    },
+    {
+      "columns": [
+        "player_id",
+        "namespace",
+        "key"
+      ],
+      "nameExplicit": false,
+      "name": "saves_pkey",
+      "entityType": "pks",
+      "schema": "public",
+      "table": "saves"
+    }
+  ],
+  "renames": []
+}

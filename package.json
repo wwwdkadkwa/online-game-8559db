@@ -1,0 +1,1 @@
+{"name":"shiftlab-performance-online","version":"1.0.0","private":true,"type":"module","engines":{"node":">=24"},"scripts":{"start":"node netlify/server/index.mjs"},"dependencies":{"@netlify/database":"^2.0.3","drizzle-orm":"^1.0.0-beta.22","ws":"^8.18.0"},"devDependencies":{"drizzle-kit":"^1.0.0-beta.22"}}
