@@ -207,7 +207,7 @@ root.kv = new Proxy({}, {
   #cars button.rent.cant, #engines button.rent.cant { color: #ff8080; border-color: rgba(255,128,128,.5); animation: poorShake .32s; }
   #cars button.rented, #engines button.rented { color: #9fe0c0; border-style: solid; border-color: rgba(110,240,138,.5); }
   #cars button .rleft, #engines button .rleft { color: #9fe0c0; font-weight: 800; margin-left: 5px; letter-spacing: .02em; }
-  /* ---- toast + the `F2` money/admin panel ---- */
+  /* ---- toast ---- */
   #toast {
     position: fixed; left: 50%; top: 66px; transform: translateX(-50%) translateY(-8px);
     z-index: 30; pointer-events: none; max-width: 86vw;
@@ -217,87 +217,7 @@ root.kv = new Proxy({}, {
     opacity: 0; transition: opacity .25s, transform .25s;
   }
   #toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
-  #announcement { position: fixed; top: 74px; left: 50%; transform: translateX(-50%); z-index: 40; width: min(560px, 90vw); box-sizing: border-box; padding: 16px 20px; border: 1px solid #8a7a52; border-radius: 12px; background: rgba(20,15,6,.96); color: #ffe9b0; text-align: center; overflow-wrap: anywhere; font: 600 14px/1.5 ui-monospace, Menlo, monospace; }
-  #announcement b { display: block; margin-bottom: 6px; color: #ffd86b; letter-spacing: .18em; font-size: 11px; }
-  #admin {
-    position: fixed; inset: 0; z-index: 25; display: none; align-items: center; justify-content: center;
-    background: radial-gradient(120% 120% at 50% 38%, rgba(16,10,2,.78), rgba(10,7,2,.95));
-    backdrop-filter: blur(6px); text-align: center; padding: 3vh 12px;
-  }
-  #admin.open { display: flex; }
-  #admin .panel {
-    width: min(820px, 94vw); max-height: 94vh; overflow: auto;
-    display: flex; flex-direction: column; gap: 13px; align-items: stretch;
-    padding: 24px; border-radius: 16px; text-align: left;
-    background: rgba(12,18,26,.98); border: 1px solid rgba(127,208,255,.2);
-    box-shadow: 0 26px 90px rgba(0,0,0,.72);
-  }
-  #admin h1 { font: 800 18px/1 ui-monospace, Menlo, monospace; letter-spacing: .2em; margin: 0; color: #eaf2ff; }
-  #admin h1 span { color: #7fd0ff; }
-  #adminBank { display: flex; align-items: baseline; gap: 10px; justify-content: flex-start; }
-  #adminBank b { font-size: 26px; letter-spacing: .04em; color: #8cfaaf; font-variant-numeric: tabular-nums; }
-  #adminBank span { font: 700 9px/1 ui-monospace, Menlo, monospace; letter-spacing: .2em; color: #8292a5; }
-  #adminHead { width: 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(127,208,255,.16); }
-  #adminServerStatus { font: 700 10px/1.4 ui-monospace, Menlo, monospace; letter-spacing: .12em; color: #8cfaaf; }
-  #adminPlayerCount { color: #8cfaaf; letter-spacing: .08em; }
-  #admin .arow { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start; align-items: center; }
-  #admin button {
-    font: 600 11px/1 ui-monospace, Menlo, Consolas, monospace; letter-spacing: .04em; color: #d7e5f4;
-    background: rgba(24,36,49,.8); border: 1px solid rgba(127,208,255,.2); padding: 9px 13px;
-    border-radius: 7px; cursor: pointer; white-space: nowrap;
-    transition: color .12s, border-color .12s, background .12s;
-  }
-  #admin button:hover { border-color: rgba(127,208,255,.8); color: #fff; background: rgba(33,54,72,.9); }
-  #admin #adminLogout { color: #ffb8b8; border-color: rgba(255,128,128,.25); }
-  #admin #adminLogout:hover { border-color: rgba(255,128,128,.75); background: rgba(65,30,35,.8); }
-  #admin input {
-    font: 600 12px/1 ui-monospace, Menlo, monospace; color: #eaf2ff; background: rgba(18,28,39,.9);
-    border: 1px solid rgba(127,208,255,.22); border-radius: 7px; padding: 9px 12px; width: 160px;
-    text-align: left;
-  }
-  #admin select {
-    font: 600 12px/1 ui-monospace, Menlo, monospace; color: #eaf2ff; background: rgba(18,28,39,.9);
-    border: 1px solid rgba(127,208,255,.22); border-radius: 7px; padding: 9px 12px; max-width: 200px;
-  }
-  #admin .asec {
-    font: 700 10px/1 ui-monospace, Menlo, monospace; letter-spacing: .18em; color: #8292a5;
-    margin-top: 4px; padding-bottom: 7px; border-bottom: 1px solid rgba(255,255,255,.07);
-  }
-  #adminNote, #adminGiftNote { font: 600 10px/1.5 ui-monospace, Menlo, monospace; letter-spacing: .04em; color: #8292a5; max-width: 92%; }
-  #cameraTools { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 35; padding: 12px 16px; border: 1px solid #8a7a52; border-radius: 12px; background: rgba(20,15,6,.96); color: #ffe9b0; text-align: center; font: 600 12px/1.6 ui-monospace, Menlo, monospace; max-width: 90vw; }
-  #cameraTools button { padding: 8px 12px; background: #34260c; color: #ffe9b0; border: 1px solid #8a7a52; border-radius: 6px; cursor: pointer; touch-action: none; }
-  /* private sign-in gate for the admin panel */
-  #gate {
-    position: fixed; inset: 0; z-index: 26; display: none; align-items: center; justify-content: center;
-    background: radial-gradient(120% 120% at 50% 38%, rgba(4,10,16,.82), rgba(2,5,9,.96));
-    backdrop-filter: blur(7px); text-align: center; padding: 3vh 12px;
-  }
-  #gate.open { display: flex; }
-  #gate .panel {
-    width: min(400px, 92vw); display: flex; flex-direction: column; gap: 14px; align-items: center;
-    padding: 30px 24px 24px; border-radius: 22px;
-    background: rgba(8,16,24,.92); border: 1px solid rgba(127,208,255,.28);
-    box-shadow: 0 26px 90px rgba(0,0,0,.72);
-  }
-  #gate h1 { font: 800 20px/1 ui-monospace, Menlo, monospace; letter-spacing: .34em; margin: 0; color: #cfe8ff; }
-  #gate h1 span { color: #7fd0ff; }
-  #gateMsg { font: 600 11px/1.5 ui-monospace, Menlo, monospace; letter-spacing: .08em; color: #7f93aa; }
-  #gateMsg.wrong { color: #ff8080; }
-  #gate .arow { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; }
-  #gate input {
-    font: 600 13px/1 ui-monospace, Menlo, monospace; letter-spacing: .06em; text-align: center;
-    color: #eaf2ff; background: rgba(10,20,30,.8);
-    border: 1px solid rgba(127,208,255,.3); border-radius: 999px; padding: 10px 16px; width: 180px;
-  }
-  #gate input:focus { outline: none; border-color: #7fd0ff; box-shadow: 0 0 18px rgba(127,208,255,.35); }
-  #gate button {
-    font: 700 11px/1 ui-monospace, Menlo, monospace; letter-spacing: .12em; color: #eaf2ff;
-    background: rgba(14,26,38,.8); border: 1px solid rgba(127,208,255,.3); padding: 10px 16px;
-    border-radius: 999px; cursor: pointer; transition: color .12s, border-color .12s, background .12s;
-  }
-  #gate button:hover { border-color: #7fd0ff; background: rgba(20,40,58,.85); }
-  #gateNote { font: 600 10px/1.5 ui-monospace, Menlo, monospace; letter-spacing: .06em; color: #5c6b7d; }
-  /* first-load name prompt (same look as the access gate) */
+  /* first-load player-name prompt */
   #nameGate {
     position: fixed; inset: 0; z-index: 27; display: none; align-items: center; justify-content: center;
     background: radial-gradient(120% 120% at 50% 38%, rgba(4,10,16,.82), rgba(2,5,9,.96));
@@ -607,7 +527,7 @@ root.kv = new Proxy({}, {
         </div>
       </div>
     </div>
-    <div id="econNote">Drift to earn cash (banked points pay out <b>$1 each</b>) and finish races for prize money. Buy cars, engines, turbos and nitrous below &mdash; or <b>rent</b> a locked one for <b>5 races</b>. The <b>F1 championship</b> requires an F1 car and the F1 V6 Hybrid. Press <b>F2</b> for the private admin console.</div>
+    <div id="econNote">Drift to earn cash (banked points pay out <b>$1 each</b>) and finish races for prize money. Buy cars, engines, turbos and nitrous below &mdash; or <b>rent</b> a locked one for <b>5 races</b>. The <b>F1 championship</b> requires an F1 car and the F1 V6 Hybrid.</div>
     <button id="driveBtn">Drive</button>
     <div class="keys">W throttle &nbsp;·&nbsp; S brake &nbsp;·&nbsp; A / D steer &nbsp;·&nbsp; <b>SPACE handbrake</b> &nbsp;·&nbsp; I ignition<br><b>DRAG</b> — manual box: <b>E</b> shift up &nbsp;·&nbsp; <b>Q</b> shift down &nbsp;·&nbsp; <b>R</b> reset &nbsp;·&nbsp; <b>B</b> nitrous</div>
     <div class="row" id="mpRow">
@@ -623,19 +543,6 @@ root.kv = new Proxy({}, {
 </div>
 
 <div id="toast"></div>
-<div id="announcement" role="status" hidden><b>ANNOUNCEMENT</b><span></span></div>
-<div id="gate">
-  <div class="panel">
-    <h1>ADMIN<span> SIGN IN</span></h1>
-    <div id="gateMsg">Sign in to your private admin account.</div>
-    <div class="arow">
-      <input id="gateUsername" type="text" autocomplete="username" spellcheck="false" maxlength="128" placeholder="username">
-      <input id="gatePassword" type="password" autocomplete="current-password" maxlength="128" placeholder="password">
-      <button id="gateBtn">Sign in</button>
-    </div>
-    <div id="gateNote">Private server control panel</div>
-  </div>
-</div>
 <div id="nameGate">
   <div class="panel">
     <h1>YOUR NAME<span>.</span></h1>
@@ -648,73 +555,6 @@ root.kv = new Proxy({}, {
     <div id="nameGateNote">Change it any time in the Garage, under MULTIPLAYER.</div>
   </div>
 </div>
-<div id="cameraTools" hidden>
-  <div id="cameraStatus" role="status"></div>
-  <div>WASD / arrows to pan · Shift for speed · Esc to return</div>
-  <button data-pan="arrowleft" aria-label="Pan left">←</button>
-  <button data-pan="arrowup" aria-label="Pan up">↑</button>
-  <button data-pan="arrowdown" aria-label="Pan down">↓</button>
-  <button data-pan="arrowright" aria-label="Pan right">→</button>
-  <button id="cameraReturn">Return to car</button>
-</div>
-<div id="admin">
-  <div class="panel">
-    <h1>SHIFTLAB<span> ADMIN</span></h1>
-    <div id="adminHead">
-      <div id="adminBank"><b id="adminCashVal">$0</b><span>YOUR LOCAL PROFILE</span></div>
-      <div id="adminServerStatus">PRIVATE ADMIN · SERVER OFFLINE</div>
-      <button id="adminLogout">Sign out</button>
-    </div>
-    <div class="arow">
-      <button data-add="1000">+$1K</button>
-      <button data-add="10000">+$10K</button>
-      <button data-add="100000">+$100K</button>
-      <button data-add="1000000">+$1M</button>
-    </div>
-    <div class="arow">
-      <input id="adminCashInput" type="number" min="0" step="1000" placeholder="cash amount">
-      <button id="adminSetBtn">Set cash</button>
-    </div>
-    <div class="arow">
-      <button id="adminUnlockCars">All cars</button>
-      <button id="adminUnlockEngines">All engines</button>
-      <button id="adminUnlockAll">Unlock everything</button>
-    </div>
-    <div class="asec">ANNOUNCE TO EVERYONE ONLINE</div>
-    <div class="arow">
-      <input id="adminAnnouncement" maxlength="280" aria-label="Announcement" placeholder="Message to everyone">
-      <button id="adminAnnounceBtn">Send announcement</button>
-    </div>
-    <div class="asec">CAMERA &amp; RECOVERY</div>
-    <div class="arow">
-      <button id="adminFreeCam">Free camera</button>
-      <button id="adminSpectate">Follow selected player</button>
-      <button id="adminReturnCam">Return to car</button>
-      <button id="adminRecover">Recover my vehicle</button>
-    </div>
-    <div class="asec">PLAYERS ONLINE <span id="adminPlayerCount">0</span></div>
-    <div class="arow">
-      <select id="adminGiftWho" aria-label="Online player"></select>
-      <button id="adminTeleportBtn">Teleport to player</button>
-      <button id="adminBringBtn">Bring player to me</button>
-      <button id="adminKickBtn">Kick player</button>
-      <input id="adminGiftCash" type="number" min="0" step="1000" placeholder="gift cash">
-      <button id="adminGiftCashBtn">Give cash</button>
-    </div>
-    <div class="arow">
-      <select id="adminGiftCar"></select>
-      <button id="adminGiftCarBtn">Give car</button>
-    </div>
-    <div id="adminGiftNote">Go online to gift other players cash and cars.</div>
-    <div class="arow">
-      <button id="adminMaxBuild">Max F1 build</button>
-      <button id="adminReset">Reset to fresh</button>
-      <button id="adminClose">Close</button>
-    </div>
-    <div id="adminNote">Private admin console · press <b>F2</b> to open</div>
-  </div>
-</div>
-
 <script type="module">
 const c = document.getElementById("c");
 const ctx = c.getContext("2d");
@@ -753,17 +593,6 @@ const nitroDescEl = document.getElementById("nitroDesc");
 const turboKeyHintEl = document.getElementById("turboKeyHint");
 const dragHudEl = document.getElementById("dragHud");
 const toastEl = document.getElementById("toast");
-const adminEl = document.getElementById("admin");
-const adminCashValEl = document.getElementById("adminCashVal");
-const adminCashInput = document.getElementById("adminCashInput");
-const adminGiftWhoEl = document.getElementById("adminGiftWho");
-const adminGiftCashEl = document.getElementById("adminGiftCash");
-const adminGiftCarEl = document.getElementById("adminGiftCar");
-const adminGiftNoteEl = document.getElementById("adminGiftNote");
-const gateEl = document.getElementById("gate");
-const gateUsername = document.getElementById("gateUsername");
-const gatePassword = document.getElementById("gatePassword");
-const gateMsgEl = document.getElementById("gateMsg");
 const dEtEl = document.getElementById("dEt");
 const dRtEl = document.getElementById("dRt");
 const dTrapEl = document.getElementById("dTrap");
@@ -1139,17 +968,11 @@ addEventListener("keydown", (e) => {
   const k = e.key.toLowerCase();
   const ae = document.activeElement;
   if (ae && (ae.tagName === "INPUT" || ae.tagName === "TEXTAREA" || ae.tagName === "SELECT" || ae.isContentEditable)) {
-    if (k === "escape") {
-      if (gateEl.classList.contains("open")) toggleGate(false);
-      else if (adminEl.classList.contains("open")) adminEl.classList.remove("open");
-    }
     return;
   }
   if (["w", "a", "s", "d", " ", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(k)) e.preventDefault();
   const wasDown = keys[k];
   keys[k] = true;
-  if (adminCamera.active && k === "escape") { stopAdminCamera(); return; }
-  if (adminCamera.active && ["w", "a", "s", "d", "arrowup", "arrowdown", "arrowleft", "arrowright", "shift"].includes(k)) return;
   if (k === "i" && !wasDown) setIgnition(!ignition);
   if (k >= "1" && k <= "9" && !wasDown) { const ei = +k - 1; if (ENGINES[ei] && hasEngine(ENGINES[ei].id)) equipEngine(ei); }
   // In the drag strip the box is a manual: E shifts up, Q shifts down. Everywhere
@@ -1171,15 +994,6 @@ addEventListener("keydown", (e) => {
   if (k === "y" && !wasDown) setAiDiff((aiDiffIdx + 1) % AI_DIFFICULTIES.length);
   if (k === "v" && !wasDown) mpSetTalking(true);
   if (k === "r" && !wasDown) resetRun();
-  if (k === "f2" && !wasDown) {
-    e.preventDefault();
-    if (adminEl.classList.contains("open")) adminEl.classList.remove("open");
-    else if (gateEl.classList.contains("open")) toggleGate(false);
-    else openAdminPanel();
-    return;
-  }
-  if (k === "escape" && !wasDown && gateEl.classList.contains("open")) { toggleGate(false); return; }
-  if (k === "escape" && !wasDown && adminEl.classList.contains("open")) { toggleAdmin(false); return; }
   if ((k === "escape" || k === "z") && !wasDown) toggleMenu();
 });
 addEventListener("keyup", (e) => { const k = e.key.toLowerCase(); keys[k] = false; if (k === "v") mpSetTalking(false); });
@@ -1188,40 +1002,7 @@ driveBtn.addEventListener("click", () => { setIgnition(true); menuEl.classList.r
 menuEl.addEventListener("click", (e) => { if (e.target.tagName === "BUTTON") e.target.blur(); });
 menuBtn.addEventListener("click", () => menuBtn.blur());
 
-/* `F2` money/admin panel wiring */
-adminEl.querySelectorAll("[data-add]").forEach((b) => b.addEventListener("click", () => {
-  addCash(+b.dataset.add, false); refreshEconomyUI(); saveEconomy();
-  if (adminCashValEl) adminCashValEl.textContent = money(cash);
-}));
-document.getElementById("adminSetBtn").addEventListener("click", () => { adminSetCash(adminCashInput.value); adminCashInput.value = ""; });
-document.getElementById("adminUnlockCars").addEventListener("click", adminUnlockCars);
-document.getElementById("adminUnlockEngines").addEventListener("click", adminUnlockEngines);
-document.getElementById("adminUnlockAll").addEventListener("click", adminUnlockAll);
-document.getElementById("adminMaxBuild").addEventListener("click", adminMaxBuild);
-document.getElementById("adminReset").addEventListener("click", adminReset);
-document.getElementById("adminAnnounceBtn").addEventListener("click", mpAnnounce);
-document.getElementById("adminTeleportBtn").addEventListener("click", mpTeleport);
-document.getElementById("adminBringBtn").addEventListener("click", mpBringPlayer);
-document.getElementById("adminKickBtn").addEventListener("click", mpKick);
-document.getElementById("adminGiftCashBtn").addEventListener("click", mpGiftCash);
-document.getElementById("adminGiftCarBtn").addEventListener("click", mpGiftCar);
-document.getElementById("adminFreeCam").addEventListener("click", () => startAdminCamera());
-document.getElementById("adminSpectate").addEventListener("click", adminSpectate);
-document.getElementById("adminReturnCam").addEventListener("click", stopAdminCamera);
-document.getElementById("cameraReturn").addEventListener("click", stopAdminCamera);
-document.getElementById("adminRecover").addEventListener("click", () => { stopAdminCamera(); resetRun(); toggleAdmin(false); });
-document.querySelectorAll("[data-pan]").forEach((button) => {
-  button.addEventListener("pointerdown", (e) => { e.preventDefault(); button.setPointerCapture(e.pointerId); keys[button.dataset.pan] = true; });
-  for (const event of ["pointerup", "pointercancel", "lostpointercapture"]) button.addEventListener(event, () => { keys[button.dataset.pan] = false; });
-});
 addEventListener("blur", () => { for (const k of Object.keys(keys)) keys[k] = false; });
-document.getElementById("adminClose").addEventListener("click", () => toggleAdmin(false));
-adminEl.addEventListener("click", (e) => { if (e.target === adminEl) toggleAdmin(false); });
-document.getElementById("gateBtn").addEventListener("click", submitGate);
-gateUsername.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); gatePassword.focus(); } });
-gatePassword.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); submitGate(); } });
-gateEl.addEventListener("click", (e) => { if (e.target === gateEl) toggleGate(false); });
-document.getElementById("adminLogout").addEventListener("click", adminLogout);
 
 const engBtns = [], engRentBtns = [];
 ENGINES.forEach((E, i) => {
@@ -1754,7 +1535,6 @@ function refreshNitroBtns() {
 }
 function refreshEconomyUI() {
   refreshCarBtns(); refreshEngineBtns(); refreshTransBtns(); refreshTurboBtns(); refreshNitroBtns();
-  if (adminCashValEl) adminCashValEl.textContent = money(cash);
 }
 
 /* ---- rentals ----
@@ -1817,119 +1597,10 @@ function ensureSceneValid() {
   return false;
 }
 
-/* ---- `F2` private admin console ---- */
-let gateBusy = false;
-let adminAuthenticated = false;
-function toggleGate(force) {
-  const willOpen = force != null ? force : !gateEl.classList.contains("open");
-  gateEl.classList.toggle("open", willOpen);
-  if (willOpen) {
-    gateBusy = false;
-    gateMsgEl.textContent = "Sign in to your private admin account.";
-    gateMsgEl.classList.remove("wrong");
-    gateUsername.value = "";
-    gatePassword.value = "";
-    setTimeout(() => gateUsername.focus(), 30);
-  } else if (document.activeElement === gateUsername || document.activeElement === gatePassword) document.activeElement.blur();
-}
-async function submitGate() {
-  if (gateBusy) return;
-  if (!gateUsername.value || !gatePassword.value) {
-    gateMsgEl.textContent = "Enter both your username and password.";
-    gateMsgEl.classList.add("wrong");
-    return;
-  }
-  gateBusy = true;
-  gateMsgEl.textContent = "Checking sign-in…";
-  gateMsgEl.classList.remove("wrong");
-  const button = document.getElementById("gateBtn");
-  button.disabled = true;
-  try {
-    const response = await fetch("/api/admin/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: gateUsername.value, password: gatePassword.value })
-    });
-    if (!response.ok) {
-      let message = "Incorrect username or password.";
-      try { message = (await response.json()).error || message; } catch {}
-      throw new Error(message);
-    }
-    adminAuthenticated = true;
-    gatePassword.value = "";
-    toggleGate(false);
-    toggleAdmin(true);
-    if (mpSocket) mpSocket.close(4000, "admin sign-in changed");
-    showToast("Admin sign-in successful.");
-  } catch (error) {
-    gateMsgEl.textContent = error.message || "Admin sign-in failed.";
-    gateMsgEl.classList.add("wrong");
-    gatePassword.value = "";
-    gatePassword.focus();
-  } finally {
-    gateBusy = false;
-    button.disabled = false;
-  }
-}
-function toggleAdmin(force) {
-  if (force === false) { adminEl.classList.remove("open"); return; }
-  if (!adminAuthenticated) { toggleGate(true); return; }
-  adminEl.classList.add("open");
-  if (adminCashValEl) adminCashValEl.textContent = money(cash);
-  refreshAdminGift();
-}
-async function openAdminPanel() {
-  try {
-    const response = await fetch("/api/admin/status", { cache: "no-store" });
-    if (!response.ok) throw new Error("Admin sign-in service unavailable.");
-    const status = await response.json();
-    adminAuthenticated = status.authenticated === true;
-  } catch (error) {
-    adminAuthenticated = false;
-    showToast(error.message || "Admin sign-in service unavailable.");
-  }
-  toggleAdmin(true);
-}
-async function adminLogout() {
-  try {
-    const response = await fetch("/api/admin/logout", { method: "POST" });
-    if (!response.ok) throw new Error("Could not sign out.");
-    adminAuthenticated = false;
-    toggleAdmin(false);
-    if (mpSocket) mpSocket.close(4000, "admin signed out");
-    showToast("Signed out of admin.");
-  } catch (error) {
-    showToast(error.message || "Could not sign out.");
-  }
-}
 function toggleMenu(force) {
   const willOpen = force != null ? force : !menuEl.classList.contains("open");
   if (willOpen) ensureSceneValid();
   menuEl.classList.toggle("open", willOpen);
-}
-function adminSetCash(v) {
-  cash = Math.max(0, Math.round(Number(v) || 0));
-  updateCashHud(); refreshEconomyUI(); saveEconomy();
-}
-function adminUnlockCars() { for (const C of CARS) { ownedCars.add(C.id); rentedCars.delete(C.id); } refreshCarBtns(); saveEconomy(); }
-function adminUnlockEngines() { for (const E of ENGINES) { ownedEngines.add(E.id); rentedEngines.delete(E.id); } refreshEngineBtns(); saveEconomy(); }
-function adminUnlockAll() { adminUnlockCars(); adminUnlockEngines(); for (const tr of TRANSMISSIONS) ownedTrans.add(tr.id); ownedTurbo = TURBO_MAX; ownedNitro = NITRO_MAX; setTurbo(TURBO_MAX); setNitro(NITRO_MAX); refreshEconomyUI(); saveEconomy(); }
-function adminMaxBuild() {
-  adminUnlockAll(); cash = Math.max(cash, 500000); updateCashHud();
-  equipEngine(F1_ENGINE_IDX); equipCar(F1_CAR_IDX); refreshEconomyUI(); saveEconomy();
-  showToast("Max F1 build unlocked, max turbo/nitro, and $500K in the bank.");
-}
-function adminReset() {
-  cash = START_CASH; ownedTurbo = 0; ownedNitro = 0;
-  ownedCars.clear(); ownedCars.add(CARS[0].id);
-  ownedEngines.clear(); ownedEngines.add(ENGINES[0].id);
-  ownedTrans.clear(); ownedTrans.add(TRANSMISSIONS[0].id);
-  rentedCars.clear(); rentedEngines.clear();
-  equipCar(0); equipEngine(0); equipTrans(0);
-  setGrip(1); setAssist(0.85); setTire(0);
-  setTurbo(0); setNitro(0);
-  updateCashHud(); refreshEconomyUI(); saveEconomy();
-  showToast("Economy reset to a fresh save.");
 }
 
 function setGrip(v) {
@@ -2028,10 +1699,10 @@ function frame(now) {
   }
   const E = ENGINES[engineIdx];
 
-  const thr = (!adminCamera.active && ignition && (keys["w"] || keys["arrowup"])) ? 1 : 0;
-  const brk = adminCamera.active ? 1 : (keys["s"] || keys["arrowdown"]) ? 1 : 0;
-  const hb  = adminCamera.active || keys[" "] ? 1 : 0;
-  const steer = adminCamera.active ? 0 : ((keys["d"] || keys["arrowright"]) ? 1 : 0) - ((keys["a"] || keys["arrowleft"]) ? 1 : 0);
+  const thr = ignition && (keys["w"] || keys["arrowup"]) ? 1 : 0;
+  const brk = (keys["s"] || keys["arrowdown"]) ? 1 : 0;
+  const hb  = keys[" "] ? 1 : 0;
+  const steer = ((keys["d"] || keys["arrowright"]) ? 1 : 0) - ((keys["a"] || keys["arrowleft"]) ? 1 : 0);
 
   const track = scene === "mp" ? mpTrack : scene;
   if (track === "skid") updateSkid(dt, now, E, thr, brk, hb, steer);
@@ -2041,7 +1712,6 @@ function frame(now) {
 
   if (scene === "mp") { updateMp(dt); mpCollide(); mpRemoteMarks(); }
 
-  updateAdminCamera(dt);
   updateSmoke(dt);
   if (track === "skid") drawSkid(now);
   else if (track === "f1") drawF1(now);
@@ -2209,49 +1879,6 @@ function roundRect(x, y, w, h, r) {
 const SKID = { padR: 340, wallR: 360, worldHalf: 440, maxSpeed: 430 };
 const car = { x: 0, y: 0, vx: 0, vy: 0, a: -Math.PI / 2, steer: 0, w: 0 };
 let camX = 0, camY = 0;
-const adminCamera = { active: false, pid: 0, x: 0, y: 0 };
-function clearCameraKeys() { for (const k of Object.keys(keys)) keys[k] = false; }
-function startAdminCamera(pid = 0) {
-  if (mpStatus !== "online") { showToast("Connect before using the camera."); return; }
-  adminCamera.active = true; adminCamera.pid = pid;
-  adminCamera.x = camX; adminCamera.y = camY;
-  clearCameraKeys();
-  document.getElementById("cameraTools").hidden = false;
-  toggleAdmin(false); menuEl.classList.remove("open");
-}
-function stopAdminCamera() {
-  adminCamera.active = false; adminCamera.pid = 0;
-  camX = car.x; camY = car.y;
-  clearCameraKeys();
-  document.getElementById("cameraTools").hidden = true;
-}
-function adminSpectate() {
-  const pid = Number(adminGiftWhoEl.value), info = mpRoster.get(pid), r = mpRemotes.get(pid);
-  if (!info || !r || !r.receivedAt || performance.now() - r.receivedAt > 3000) { showToast("Select a player with a live position first."); return; }
-  mpSetTrack(info.track);
-  if (scene !== "mp") setScene("mp");
-  startAdminCamera(pid);
-}
-function updateAdminCamera(dt) {
-  if (!adminCamera.active) return;
-  if (adminCamera.pid) {
-    const info = mpRoster.get(adminCamera.pid), r = mpRemotes.get(adminCamera.pid);
-    if (!info || !r || performance.now() - r.receivedAt > 3000 || info.track !== mpTrack) {
-      adminCamera.pid = 0; showToast("Player unavailable on this map. Free camera enabled.");
-    } else { adminCamera.x = r.x; adminCamera.y = r.y; }
-  }
-  const dx = ((keys.d || keys.arrowright) ? 1 : 0) - ((keys.a || keys.arrowleft) ? 1 : 0);
-  const dy = ((keys.s || keys.arrowdown) ? 1 : 0) - ((keys.w || keys.arrowup) ? 1 : 0);
-  if (dx || dy) {
-    adminCamera.pid = 0;
-    const speed = (keys.shift ? 2200 : 750) * dt / Math.hypot(dx, dy);
-    adminCamera.x += dx * speed; adminCamera.y += dy * speed;
-  }
-  camX = adminCamera.x; camY = adminCamera.y;
-  document.getElementById("cameraStatus").textContent = adminCamera.pid
-    ? "FOLLOWING · " + mpRoster.get(adminCamera.pid).name
-    : "FREE CAMERA · " + Math.round(camX) + ", " + Math.round(camY);
-}
 let prevRearL = null, prevRearR = null;
 let skidAmt = 0;
 let smokeTimer = 0;
@@ -2486,7 +2113,7 @@ function feedModel(dt, E, thr, prm, spd, vLat, spin) {
   // nitrous: hold B to spray while the bottle has charge. currentHp() reads
   // nitroAmt, so the shot is real power; the bottle drains while lit and
   // trickle-refills the rest of the time (and is topped up by a reset).
-  const spray = !adminCamera.active && nitroLevel > 0 && ignition && keys["b"] && nitro > 0;
+  const spray = nitroLevel > 0 && ignition && keys["b"] && nitro > 0;
   if (spray && !nitroWas && !E.ev) scheduleBlowoff(0.85);   // purge hiss as it lights
   nitroWas = spray;
   if (spray) nitro = Math.max(0, nitro - dt / (NITRO_SHOT * nitroLevel));
@@ -4251,7 +3878,6 @@ function setScene(s) {
   }
   if (s === scene) return;
   const wasMp = scene === "mp";
-  stopAdminCamera();
   scene = s;
   modeBtns.forEach((b, i) => b.classList.toggle("active", MODES[i][0] === s));
   const isF1 = s === "f1", isDrag = s === "drag", isMp = s === "mp";
@@ -4406,7 +4032,6 @@ let mpPid = 0;
 let mpStatus = "offline";            // offline | connecting | online | full | error
 let mpRoster = new Map();            // pid -> { name, ci, talk }
 const mpRemotes = new Map();         // pid -> { x, y, a, steer, ci, sx, sy, sa, name, fresh }
-let mpAnnouncementTimer = null;
 let mpSendAccum = 0;
 let mpRetryN = 0, mpRetryTimer = null;
 let mpTransport = "websocket";        // perchance | relay
@@ -4445,7 +4070,6 @@ function refreshMpUI() {
   if (mpStatusEl) {
     const txt = mpStatus === "online" ? ("online · " + (mpRoster.size + 1) + " player" + (mpRoster.size ? "s" : ""))
       : mpStatus === "connecting" ? "connecting…"
-      : mpStatus === "kicked" ? "kicked"
       : mpStatus === "full" ? "room full"
       : mpStatus === "error" ? "connection lost" : "offline";
     if (mpStatusEl.textContent !== txt) mpStatusEl.textContent = txt;
@@ -4481,10 +4105,9 @@ function refreshMpUI() {
 }
 
 function mpSetStatus(s) {
-  if (s !== "online") stopAdminCamera();
   mpStatus = s; refreshMpUI();
   document.getElementById('onlineGate').style.display = s === 'online' ? 'none' : 'grid';
-  document.getElementById('onlineGateText').textContent = s === 'kicked' ? 'You were kicked by an admin. Automatic reconnection is stopped. Use Reconnect to join again.' : s === 'full' ? 'The room is full. Try again shortly.' : s === 'connecting' ? 'Connecting to the race server… Play resumes automatically when connected.' : 'Connection lost. An internet connection is required to play. Reconnecting…';
+  document.getElementById('onlineGateText').textContent = s === 'full' ? 'The room is full. Try again shortly.' : s === 'connecting' ? 'Connecting to the race server… Play resumes automatically when connected.' : 'Connection lost. An internet connection is required to play. Reconnecting…';
 }
 
 function mpSend(msg) {
@@ -4550,7 +4173,6 @@ function mpEnterTrack() {
    anyone else who's there). */
 function mpSetTrack(t) {
   if (t !== "skid" && t !== "drag" && t !== "f1") return;
-  stopAdminCamera();
   const changed = t !== mpTrack;
   mpTrack = t;
   if (scene === "mp") mpEnterTrack(); else refreshMpUI();
@@ -4565,7 +4187,7 @@ function mpSocketUrl() {
 }
 
 function mpJoin() {
-  if (mpSocket || mpStatus === "kicked") return;
+  if (mpSocket) return;
   const name = mpSanitizeName(mpNameInputEl ? mpNameInputEl.value : mpName) || mpName || "Racer";
   mpName = name;
   if (mpNameInputEl) mpNameInputEl.value = name;
@@ -4614,15 +4236,8 @@ function mpJoin() {
     }
   });
 
-  sock.addEventListener("close", (ev) => {
+  sock.addEventListener("close", () => {
     if (mpSocket !== sock) return;
-    if (ev.code === 4001) {
-      mpLeave();
-      mpSetStatus("kicked");
-      refreshAdminGift();
-      showToast("You were kicked by an admin.", 6000);
-      return;
-    }
     mpPid = 0;
     mpClearPeers();
     retry();
@@ -4645,7 +4260,6 @@ function mpLeave() {
 }
 
 function mpToggle() {
-  if (mpStatus === 'kicked') mpSetStatus('offline');
   if (mpStatus !== 'online' && !mpSocket) mpJoin();
   if (mpStatus === 'online') setScene('mp');
 }
@@ -4661,37 +4275,6 @@ function mpHandle(data) {
     // Reconnection preserves the selected game mode.
     return;
   }
-  if (tag === 75 /* K — kick result */) {
-    showToast(data.split("|")[1] === "ok" ? "Player kicked from the room." : "That player is no longer online.");
-    return;
-  }
-  if (tag === 88 /* X — admin authorization required */) {
-    adminAuthenticated = false;
-    adminEl.classList.remove("open");
-    toggleGate(true);
-    gateMsgEl.textContent = data.slice(2) || "Admin sign-in required.";
-    gateMsgEl.classList.add("wrong");
-    return;
-  }
-  if (tag === 80 /* P — bring player */) {
-    let dest;
-    try { dest = JSON.parse(data.slice(2)); } catch (e) { return; }
-    if (dest.status) {
-      showToast(dest.status === "ok" ? "Player teleported to you." : "That player is no longer online.");
-      return;
-    }
-    if (mpStatus !== "online" || !mpPid || !["skid", "drag", "f1"].includes(dest.track) ||
-        ![dest.x, dest.y, dest.a].every(Number.isFinite)) return;
-    mpSetTrack(dest.track);
-    if (scene !== "mp") setScene("mp");
-    car.x = dest.x; car.y = dest.y; car.a = dest.a;
-    car.vx = car.vy = car.w = car.steer = 0;
-    smoke.length = 0; prevRearL = prevRearR = null; skidAmt = 0; burnout = false;
-    camX = car.x; camY = car.y;
-    mpSendAccum = 1;
-    showToast("Teleported to " + mpEsc(dest.name) + ".");
-    return;
-  }
   if (tag === 82 /* R — roster */) { mpApplyRoster(data); return; }
   if (tag === 83 /* S — peer state */) { mpApplyState(data); return; }
   if (tag === 86 /* V — voice signal */) {
@@ -4700,19 +4283,6 @@ function mpHandle(data) {
     if (bar > 0) mpVoiceHandle(Number(rest.slice(0, bar)) | 0, rest.slice(bar + 1));
     return;
   }
-  if (tag === 66 /* B — room announcement */) {
-    const banner = document.getElementById("announcement");
-    let announcement;
-    try { announcement = JSON.parse(data.slice(2)); } catch (e) { return; }
-    if (!announcement || typeof announcement.name !== "string" || typeof announcement.text !== "string") return;
-    banner.querySelector("b").textContent = "ANNOUNCEMENT · " + announcement.name.slice(0, 40);
-    banner.querySelector("span").textContent = announcement.text.slice(0, 280);
-    banner.hidden = false;
-    clearTimeout(mpAnnouncementTimer);
-    mpAnnouncementTimer = setTimeout(() => { banner.hidden = true; }, 12000);
-    return;
-  }
-  if (tag === 71 /* G — a gift from another player */) { mpReceiveGift(data); return; }
   if (tag === 70 /* F — full */) {
     // A full-room response leaves the TCP/WebSocket open unless we close it.
     // Detach first so its close event cannot trigger the normal reconnect loop.
@@ -4750,7 +4320,6 @@ function mpApplyRoster(data) {
   for (const pid of [...mpVoice.keys()]) if (!next.has(pid)) mpVoiceClose(pid);
   mpRoster = next;
   refreshMpUI();
-  refreshAdminGift();
   // a player joining/leaving the strip can shuffle the grid: re-stage if my slot moved
   if (scene === "mp" && mpTrack === "drag" && dragRun.state === "staging" && mpDragRank() !== mpDragSlot) mpStageDrag();
 }
@@ -4919,109 +4488,6 @@ function mpStageDrag() {
   car.y = mpLaneSign * DRAG.laneY;
   car.vx = car.vy = 0;
   camX = car.x + 150;
-}
-
-/* ---- gifting: the cheat panel can hand cash or a car to a player in the room ---- */
-function refreshAdminGift() {
-  if (!adminGiftWhoEl) return;
-  const live = mpStatus === "online" || mpStatus === "connecting";
-  document.getElementById("adminPlayerCount").textContent = String(mpRoster.size + (mpStatus === "online" ? 1 : 0));
-  document.getElementById("adminServerStatus").textContent = "PRIVATE ADMIN · SERVER " +
-    (mpStatus === "online" ? "ONLINE" : mpStatus === "connecting" ? "CONNECTING" : "OFFLINE");
-  const prev = adminGiftWhoEl.value;
-  let opts = "";
-  if (mpRoster.size === 0) opts = '<option value="">' + (live ? "no other players" : "offline") + "</option>";
-  else for (const info of mpRoster.values()) opts += '<option value="' + info.pid + '">' + mpEsc(info.name) + "</option>";
-  adminGiftWhoEl.innerHTML = opts;
-  if (prev && mpRoster.has(Number(prev))) adminGiftWhoEl.value = prev;
-  if (adminGiftNoteEl) adminGiftNoteEl.textContent = live
-    ? (mpRoster.size ? "Pick a player, then hand them cash or a car — it lands instantly." : "Nobody else is online right now.")
-    : "Go online to gift other players cash and cars.";
-}
-function mpAnnounce() {
-  const input = document.getElementById("adminAnnouncement");
-  const text = input.value.replace(/\s+/g, " ").trim().slice(0, 280);
-  if (!text) { showToast("Enter an announcement first."); return; }
-  if (mpStatus !== "online" || !mpPid || !mpSend("B|" + text)) { showToast("Not connected."); return; }
-  input.value = "";
-}
-function mpKick() {
-  if (mpStatus !== "online" || !mpPid) { showToast("Not connected."); return; }
-  const pid = Number(adminGiftWhoEl.value);
-  if (!mpRoster.has(pid)) { showToast("Select an online player first."); return; }
-  if (!mpSend("K|" + pid)) showToast("Not connected.");
-}
-function mpBringPlayer() {
-  if (mpStatus !== "online" || !mpPid) { showToast("Not connected."); return; }
-  const pid = Number(adminGiftWhoEl.value);
-  if (!mpRoster.has(pid)) { showToast("Select an online player first."); return; }
-  if (scene !== "mp") { showToast("Enter Online driving first to bring a player to your car."); return; }
-  const dest = { pid, track: mpTrack, x: car.x - Math.cos(car.a) * 100, y: car.y - Math.sin(car.a) * 100, a: car.a };
-  if (!mpSend("P|" + JSON.stringify(dest))) showToast("Not connected.");
-}
-function mpTeleport() {
-  if (mpStatus !== "online" || !mpPid) { showToast("Not connected."); return; }
-  const pid = Number(adminGiftWhoEl.value);
-  const info = mpRoster.get(pid), r = mpRemotes.get(pid);
-  if (!info) { showToast("Select an online player first."); return; }
-  if (!r || !r.receivedAt || performance.now() - r.receivedAt > 3000) {
-    showToast("Waiting for that player's live position. They need to be driving online."); return;
-  }
-  // Snapshot the destination before entering a map resets the local simulation.
-  const x = r.sx, y = r.sy, a = r.sa;
-  mpSetTrack(info.track);
-  if (scene !== "mp") setScene("mp");
-  car.x = x - Math.cos(a) * 100; car.y = y - Math.sin(a) * 100; car.a = a;
-  car.vx = car.vy = car.w = car.steer = 0;
-  smoke.length = 0; prevRearL = prevRearR = null; skidAmt = 0; burnout = false;
-  camX = car.x; camY = car.y;
-  mpSendAccum = 1;
-  toggleAdmin(false);
-  showToast("Teleported to " + mpEsc(info.name) + ".");
-}
-function mpGiftTarget() {
-  const pid = Number(adminGiftWhoEl && adminGiftWhoEl.value) | 0;
-  if (!pid) { showToast("No player selected to gift."); return null; }
-  return pid;
-}
-function mpGiftCash() {
-  const pid = mpGiftTarget(); if (!pid) return;
-  const amt = Math.max(0, Math.round(Number(adminGiftCashEl && adminGiftCashEl.value) || 0));
-  if (!amt) { showToast("Enter a cash amount to gift."); return; }
-  if (!mpSend("G|" + pid + "|cash|" + amt)) { showToast("Not connected."); return; }
-  adminGiftCashEl.value = "";
-  const info = mpRoster.get(pid);
-  showToast("Gifted " + money(amt) + " to " + (info ? mpEsc(info.name) : "player") + ".");
-}
-function mpGiftCar() {
-  const pid = mpGiftTarget(); if (!pid) return;
-  const C = CARS.find((c) => c.id === (adminGiftCarEl && adminGiftCarEl.value));
-  if (!C) { showToast("Pick a car to gift."); return; }
-  if (!mpSend("G|" + pid + "|car|" + C.id)) { showToast("Not connected."); return; }
-  const info = mpRoster.get(pid);
-  showToast("Gifted the " + C.name + " to " + (info ? mpEsc(info.name) : "player") + ".");
-}
-if (adminGiftCarEl) adminGiftCarEl.innerHTML = CARS.map((C) => '<option value="' + C.id + '">' + C.name + "</option>").join("");
-
-function mpReceiveGift(data) {
-  const p = data.split("|");                 // G|fromPid|fromName|kind|value
-  if (p.length < 5) return;
-  const fromName = String(p[2] || "Someone").slice(0, 24);
-  const kind = p[3], value = p[4];
-  if (kind === "cash") {
-    const amt = Math.max(0, Math.min(1e9, Math.round(Number(value) || 0)));
-    if (!amt) return;
-    addCash(amt, false); saveEconomy();
-    if (adminCashValEl) adminCashValEl.textContent = money(cash);
-    showToast(fromName + " gifted you " + money(amt) + "!");
-  } else if (kind === "car") {
-    const C = CARS.find((c) => c.id === value);
-    if (!C) return;
-    if (ownedCars.has(C.id)) { showToast(fromName + " sent you the " + C.name + " — you already own it."); return; }
-    ownedCars.add(C.id); rentedCars.delete(C.id);
-    refreshCarBtns(); saveEconomy();
-    showToast(fromName + " gifted you the " + C.name + "!");
-  }
 }
 
 /* ---- voice chat ----
@@ -5203,11 +4669,10 @@ document.getElementById('onlineRetry').addEventListener('click', () => {
   mpLeave(); mpJoin();
 });
 window.addEventListener('online', () => { if (!mpSocket) mpJoin(); });
-window.addEventListener('offline', () => { if (mpStatus === 'kicked') return; if (mpSocket) mpSocket.close(); mpSetStatus('error'); });
+window.addEventListener('offline', () => { if (mpSocket) mpSocket.close(); mpSetStatus('error'); });
 loadMpName();
 mpJoin();
 refreshMpUI();
-refreshAdminGift();
 
 setGrip(gripMult);
 setAssist(assistAmt);
