@@ -249,6 +249,67 @@ root.kv = new Proxy({}, {
   #nameGate button:hover { border-color: #7fd0ff; background: rgba(20,40,58,.85); }
   #nameGate button.ghost { color: #7f93aa; border-color: rgba(255,255,255,.14); background: transparent; }
   #nameGateNote { font: 600 10px/1.5 ui-monospace, Menlo, monospace; letter-spacing: .06em; color: #5c6b7d; }
+  #adminPanel {
+    position: fixed; inset: 0; z-index: 40; display: none; place-items: center;
+    padding: 3vh 12px; background: rgba(3,7,12,.84); backdrop-filter: blur(8px); text-align: left;
+  }
+  #adminPanel.open { display: grid; }
+  #adminPanel .admin-shell {
+    width: min(980px, 96vw); max-height: 92vh; display: flex; flex-direction: column; overflow: hidden;
+    color: #dfe8f5; background: #101923; border: 1px solid rgba(127,208,255,.3); border-radius: 18px;
+    box-shadow: 0 28px 100px rgba(0,0,0,.7); font: 12px/1.5 ui-monospace, Menlo, Consolas, monospace;
+  }
+  #adminPanel .admin-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 22px; border-bottom: 1px solid rgba(255,255,255,.1); }
+  #adminPanel .admin-brand { color: #8fa3ba; font-size: 10px; letter-spacing: .2em; }
+  #adminPanel h2 { margin: 3px 0 0; color: #eaf2ff; font-size: 18px; letter-spacing: .08em; }
+  #adminPanel .admin-online { color: #6ef08a; font-size: 10px; letter-spacing: .12em; white-space: nowrap; }
+  #adminPanel .admin-layout { display: grid; grid-template-columns: 154px minmax(0,1fr); min-height: 0; flex: 1; }
+  #adminPanel .admin-nav { display: flex; flex-direction: column; gap: 5px; padding: 16px 10px; border-right: 1px solid rgba(255,255,255,.1); }
+  #adminPanel button, #adminPanel input {
+    font: 600 11px/1.2 ui-monospace, Menlo, Consolas, monospace; letter-spacing: .04em;
+  }
+  #adminPanel button {
+    color: #afc0d3; background: rgba(12,20,30,.8); border: 1px solid rgba(255,255,255,.12);
+    border-radius: 8px; padding: 9px 11px; cursor: pointer;
+  }
+  #adminPanel button:hover, #adminPanel button.active { color: #eaf2ff; border-color: rgba(127,208,255,.6); background: rgba(45,99,138,.25); }
+  #adminPanel button:disabled { opacity: .42; cursor: not-allowed; }
+  #adminPanel .admin-close { color: #8fa3ba; }
+  #adminPanel .admin-main { min-height: 0; overflow: auto; padding: 20px; }
+  #adminPanel [data-admin-view][hidden], #adminPanel [data-admin-owner][hidden], #adminPanel [hidden] { display: none !important; }
+  #adminPanel .admin-view h3 { margin: 0 0 13px; font-size: 12px; letter-spacing: .14em; color: #9fd2ff; }
+  #adminPanel .admin-cards { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; margin-bottom: 18px; }
+  #adminPanel .admin-card { min-width: 0; padding: 13px; border: 1px solid rgba(255,255,255,.1); border-radius: 10px; background: rgba(5,12,20,.48); }
+  #adminPanel .admin-card span { display: block; color: #71859c; font-size: 9px; letter-spacing: .15em; }
+  #adminPanel .admin-card b { display: block; margin-top: 5px; color: #eaf2ff; font-size: 16px; overflow-wrap: anywhere; }
+  #adminPanel .admin-surface { padding: 15px; border: 1px solid rgba(255,255,255,.1); border-radius: 10px; background: rgba(5,12,20,.48); }
+  #adminPanel .admin-form { display: flex; flex-wrap: wrap; align-items: end; gap: 9px; }
+  #adminPanel .admin-form label { display: grid; gap: 5px; color: #8296ac; font-size: 9px; letter-spacing: .1em; }
+  #adminPanel input { min-width: 0; color: #eaf2ff; background: #0a111a; border: 1px solid rgba(255,255,255,.16); border-radius: 7px; padding: 10px; outline: none; }
+  #adminPanel input:focus { border-color: #7fd0ff; }
+  #adminPanel input::placeholder { color: #53667c; }
+  #adminPanel .admin-message { min-height: 18px; margin: 10px 0 0; color: #8fa3ba; font-size: 10px; }
+  #adminPanel .admin-message.error { color: #ff8a8a; }
+  #adminPanel .admin-message.success { color: #6ef08a; }
+  #adminPanel .admin-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+  #adminPanel .admin-table-wrap { overflow: auto; border: 1px solid rgba(255,255,255,.1); border-radius: 8px; }
+  #adminPanel table { width: 100%; border-collapse: collapse; min-width: 460px; text-align: left; }
+  #adminPanel th, #adminPanel td { padding: 9px 11px; border-bottom: 1px solid rgba(255,255,255,.07); vertical-align: middle; }
+  #adminPanel th { color: #71859c; font-size: 9px; letter-spacing: .12em; background: rgba(255,255,255,.025); }
+  #adminPanel td { color: #c4d2e2; overflow-wrap: anywhere; }
+  #adminPanel tr:last-child td { border-bottom: 0; }
+  #adminPanel td button { padding: 6px 9px; color: #ff9a9a; border-color: rgba(255,128,128,.25); }
+  #adminPanel .admin-announcement { display: flex; gap: 8px; margin-top: 12px; }
+  #adminPanel .admin-announcement input { flex: 1; }
+  @media (max-width: 620px) {
+    #adminPanel .admin-shell { max-height: 94vh; }
+    #adminPanel .admin-head { padding: 14px; }
+    #adminPanel .admin-layout { grid-template-columns: 1fr; }
+    #adminPanel .admin-nav { flex-direction: row; overflow-x: auto; padding: 8px; border-right: 0; border-bottom: 1px solid rgba(255,255,255,.1); }
+    #adminPanel .admin-nav button { flex: 0 0 auto; }
+    #adminPanel .admin-main { padding: 12px; }
+    #adminPanel .admin-cards { grid-template-columns: 1fr; }
+  }
   /* tuning sliders (grip + drift assist) */
   #tuneRow { display: flex; flex-direction: column; gap: 8px; width: min(440px, 88vw); }
   .tuneLine { display: flex; align-items: center; gap: 11px; width: 100%; }
@@ -555,6 +616,73 @@ root.kv = new Proxy({}, {
     <div id="nameGateNote">Change it any time in the Garage, under MULTIPLAYER.</div>
   </div>
 </div>
+<div id="adminPanel" aria-hidden="true">
+  <section class="admin-shell" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+    <header class="admin-head">
+      <div><div class="admin-brand">SHIFTLAB / CONTROL CENTER</div><h2 id="adminTitle">SERVER DASHBOARD</h2></div>
+      <div><span class="admin-online" id="adminConnection">CHECKING SERVER</span> <button type="button" class="admin-close" id="adminClose">Close · F2</button></div>
+    </header>
+    <div class="admin-layout">
+      <nav class="admin-nav" aria-label="Admin dashboard">
+        <button type="button" class="active" data-admin-tab="overview">Overview</button>
+        <button type="button" data-admin-tab="players">Players</button>
+        <button type="button" data-admin-tab="admins" data-admin-owner hidden>Admins</button>
+        <button type="button" data-admin-tab="logs" data-admin-owner hidden>Activity log</button>
+      </nav>
+      <main class="admin-main">
+        <section class="admin-view" data-admin-view="overview">
+          <h3>SERVER OVERVIEW</h3>
+          <div class="admin-cards">
+            <div class="admin-card"><span>INSTANCE</span><b id="adminInstanceState">Connecting</b></div>
+            <div class="admin-card"><span>PLAYERS ONLINE</span><b id="adminPlayerCount">0</b></div>
+            <div class="admin-card"><span>ACCESS</span><b id="adminAccessState">Public dashboard</b></div>
+          </div>
+          <div class="admin-surface" id="adminLoginPane">
+            <h3>ADMIN ACCESS</h3>
+            <form class="admin-form" id="adminLoginForm">
+              <label>OPERATOR PASSWORD<input name="password" type="password" autocomplete="current-password" required maxlength="128" placeholder="Enter password"></label>
+              <button type="submit">Unlock controls</button>
+            </form>
+            <p class="admin-message" id="adminLoginMessage" aria-live="polite">Dashboard is public. Enter the operator password to unlock controls.</p>
+          </div>
+          <div class="admin-surface" id="adminSignedPane" hidden>
+            <div class="admin-toolbar"><span>ACCESS LEVEL: <b id="adminSignedName"></b></span><button type="button" id="adminLogout">Lock controls</button></div>
+            <p class="admin-message" id="adminActionMessage" aria-live="polite"></p>
+          </div>
+        </section>
+        <section class="admin-view" data-admin-view="players" hidden>
+          <div class="admin-toolbar"><h3>LIVE PLAYERS</h3><button type="button" id="adminRefreshPlayers">Refresh</button></div>
+          <div class="admin-table-wrap"><table><thead><tr><th>PLAYER</th><th>ID</th><th>TRACK</th><th>MODERATION</th></tr></thead><tbody id="adminPlayersBody"></tbody></table></div>
+          <p class="admin-message" id="adminPlayersMessage" aria-live="polite">Enter an admin password to manage players.</p>
+          <div class="admin-surface" style="margin-top:14px">
+            <h3>SERVER ANNOUNCEMENT</h3>
+            <form class="admin-announcement" id="adminAnnouncementForm">
+              <input name="message" maxlength="240" placeholder="Message to all online players" required>
+              <button type="submit">Broadcast</button>
+            </form>
+          </div>
+        </section>
+        <section class="admin-view" data-admin-view="admins" data-admin-owner hidden>
+          <div class="admin-toolbar"><h3>ADMIN ACCOUNTS</h3><button type="button" id="adminRefreshUsers">Refresh</button></div>
+          <div class="admin-table-wrap"><table><thead><tr><th>ACCOUNT</th><th>ROLE</th><th>ADDED</th></tr></thead><tbody id="adminUsersBody"></tbody></table></div>
+          <div class="admin-surface" style="margin-top:14px">
+            <h3>ADD ADMIN</h3>
+            <form class="admin-form" id="adminCreateForm">
+              <label>ADMIN PASSWORD<input name="password" type="password" autocomplete="new-password" required minlength="8" maxlength="128"></label>
+              <button type="submit">Add password</button>
+            </form>
+            <p class="admin-message" id="adminUsersMessage" aria-live="polite">Give this password to the admin. There is no username. Up to 10 admin passwords can be active.</p>
+          </div>
+        </section>
+        <section class="admin-view" data-admin-view="logs" data-admin-owner hidden>
+          <div class="admin-toolbar"><h3>ADMIN ACTIVITY LOG</h3><button type="button" id="adminRefreshLogs">Refresh</button></div>
+          <div class="admin-table-wrap"><table><thead><tr><th>TIME</th><th>ADMIN</th><th>EVENT</th><th>DETAILS</th></tr></thead><tbody id="adminLogsBody"></tbody></table></div>
+          <p class="admin-message" id="adminLogsMessage" aria-live="polite">The activity log is append-only.</p>
+        </section>
+      </main>
+    </div>
+  </section>
+</div>
 <script type="module">
 const c = document.getElementById("c");
 const ctx = c.getContext("2d");
@@ -593,6 +721,7 @@ const nitroDescEl = document.getElementById("nitroDesc");
 const turboKeyHintEl = document.getElementById("turboKeyHint");
 const dragHudEl = document.getElementById("dragHud");
 const toastEl = document.getElementById("toast");
+const adminPanelEl = document.getElementById("adminPanel");
 const dEtEl = document.getElementById("dEt");
 const dRtEl = document.getElementById("dRt");
 const dTrapEl = document.getElementById("dTrap");
@@ -966,6 +1095,15 @@ function audioUpdate() {
 const keys = {};
 addEventListener("keydown", (e) => {
   const k = e.key.toLowerCase();
+  if (k === "f2") {
+    e.preventDefault();
+    if (!e.repeat) toggleAdminPanel();
+    return;
+  }
+  if (k === "escape" && adminPanelEl && adminPanelEl.classList.contains("open")) {
+    closeAdminPanel();
+    return;
+  }
   const ae = document.activeElement;
   if (ae && (ae.tagName === "INPUT" || ae.tagName === "TEXTAREA" || ae.tagName === "SELECT" || ae.isContentEditable)) {
     return;
@@ -4020,6 +4158,22 @@ const nameGateInput = document.getElementById("nameGateInput");
 const nameGateBtn = document.getElementById("nameGateBtn");
 const nameGateSkip = document.getElementById("nameGateSkip");
 const nameGateMsg = document.getElementById("nameGateMsg");
+const adminConnectionEl = document.getElementById("adminConnection");
+const adminInstanceStateEl = document.getElementById("adminInstanceState");
+const adminPlayerCountEl = document.getElementById("adminPlayerCount");
+const adminAccessStateEl = document.getElementById("adminAccessState");
+const adminLoginPane = document.getElementById("adminLoginPane");
+const adminSignedPane = document.getElementById("adminSignedPane");
+const adminLoginMessageEl = document.getElementById("adminLoginMessage");
+const adminActionMessageEl = document.getElementById("adminActionMessage");
+const adminPlayersMessageEl = document.getElementById("adminPlayersMessage");
+const adminUsersMessageEl = document.getElementById("adminUsersMessage");
+const adminLogsMessageEl = document.getElementById("adminLogsMessage");
+const adminPlayersBody = document.getElementById("adminPlayersBody");
+const adminUsersBody = document.getElementById("adminUsersBody");
+const adminLogsBody = document.getElementById("adminLogsBody");
+const adminSignedNameEl = document.getElementById("adminSignedName");
+let adminRole = null;
 
 const MP_TRACKS = [["skid", "SKID PAD"], ["drag", "DRAG STRIP"], ["f1", "CIRCUIT"]];
 const MP_TRACK_LABEL = { skid: "Skid Pad", drag: "Drag Strip", f1: "Circuit" };
@@ -4030,6 +4184,7 @@ let mpName = "";
 let mpNameSet = false;                // has the player chosen a name yet?
 let mpPid = 0;
 let mpStatus = "offline";            // offline | connecting | online | full | error
+let mpKicked = false;
 let mpRoster = new Map();            // pid -> { name, ci, talk }
 const mpRemotes = new Map();         // pid -> { x, y, a, steer, ci, sx, sy, sa, name, fresh }
 let mpSendAccum = 0;
@@ -4067,6 +4222,8 @@ function mpSanitizeName(s) {
 }
 
 function refreshMpUI() {
+  if (adminInstanceStateEl) adminInstanceStateEl.textContent = mpStatus === "online" ? "Online" : mpStatus === "connecting" ? "Connecting" : "Offline";
+  if (adminPlayerCountEl) adminPlayerCountEl.textContent = String(mpRoster.size + (mpPid ? 1 : 0));
   if (mpStatusEl) {
     const txt = mpStatus === "online" ? ("online · " + (mpRoster.size + 1) + " player" + (mpRoster.size ? "s" : ""))
       : mpStatus === "connecting" ? "connecting…"
@@ -4104,10 +4261,316 @@ function refreshMpUI() {
   mpHudEl.innerHTML = h;
 }
 
+function adminSetMessage(element, message, kind = "") {
+  if (!element) return;
+  element.textContent = message;
+  element.classList.remove("error", "success");
+  if (kind) element.classList.add(kind);
+}
+
+async function adminRequest(path, options = {}) {
+  const response = await fetch(path, {
+    credentials: "same-origin",
+    ...options,
+    headers: { ...(options.headers || {}), ...(options.body ? { "Content-Type": "application/json" } : {}) }
+  });
+  const text = await response.text();
+  const contentType = response.headers.get("content-type") || "";
+  const isJson = /(?:application\/json|\+json)(?:\s*;|$)/i.test(contentType);
+  if (!response.ok && !isJson) {
+    throw new Error("Admin service returned HTTP " + response.status + " without JSON. Deploy the latest Netlify server routes.");
+  }
+  if (response.status === 204 && !text) return null;
+  if (!isJson || !text) {
+    throw new Error("Admin service returned an invalid response (HTTP " + response.status +
+      (contentType ? ", " + contentType : "") + "). Deploy the latest Netlify server routes.");
+  }
+  let data = null;
+  try { data = JSON.parse(text); }
+  catch { throw new Error("Admin service returned invalid JSON (HTTP " + response.status + ")."); }
+  if (!response.ok) throw new Error(data && data.error ? data.error : "Admin request failed (HTTP " + response.status + ").");
+  return data;
+}
+
+function adminSetTab(tab) {
+  const ownerTab = tab === "admins" || tab === "logs";
+  if (ownerTab && adminRole !== "owner") tab = "overview";
+  for (const button of document.querySelectorAll("[data-admin-tab]")) {
+    button.classList.toggle("active", button.dataset.adminTab === tab);
+  }
+  for (const view of document.querySelectorAll("[data-admin-view]")) {
+    view.hidden = view.dataset.adminView !== tab || (view.hasAttribute("data-admin-owner") && adminRole !== "owner");
+  }
+}
+
+function adminRenderPlayers(rows) {
+  if (!adminPlayersBody) return;
+  const players = rows || [
+    ...(mpPid ? [{ pid: mpPid, name: mpName || "You", track: mpTrack }] : []),
+    ...mpRoster.values()
+  ];
+  adminPlayerCountEl.textContent = String(players.length);
+  adminPlayersBody.replaceChildren();
+  if (!players.length) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 4;
+    cell.textContent = "No players are online.";
+    row.appendChild(cell);
+    adminPlayersBody.appendChild(row);
+    return;
+  }
+  for (const player of players) {
+    const row = document.createElement("tr");
+    const nameCell = document.createElement("td");
+    nameCell.textContent = player.name + (player.pid === mpPid ? " (you)" : "");
+    const idCell = document.createElement("td");
+    idCell.textContent = String(player.pid);
+    const trackCell = document.createElement("td");
+    trackCell.textContent = MP_TRACK_LABEL[player.track] || player.track || "Skid Pad";
+    const actionCell = document.createElement("td");
+    if (adminRole) {
+      const kick = document.createElement("button");
+      kick.type = "button";
+      kick.textContent = "Kick";
+      kick.disabled = player.pid === mpPid;
+      kick.setAttribute("aria-label", "Kick " + player.name);
+      kick.addEventListener("click", () => {
+        if (!mpSend("K|" + player.pid)) adminSetMessage(adminPlayersMessageEl, "Reconnect to the game server before moderating players.", "error");
+      });
+      actionCell.appendChild(kick);
+    } else {
+      actionCell.textContent = "Admin sign-in required";
+    }
+    row.append(nameCell, idCell, trackCell, actionCell);
+    adminPlayersBody.appendChild(row);
+  }
+}
+
+function adminRenderUsers(users) {
+  adminUsersBody.replaceChildren();
+  if (!users.length) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 3;
+    cell.textContent = "No admin accounts found.";
+    row.appendChild(cell);
+    adminUsersBody.appendChild(row);
+    return;
+  }
+  for (const user of users) {
+    const row = document.createElement("tr");
+    const accountName = user.role === "owner" ? "Owner" : "Admin " + String(user.id).slice(0, 8);
+    for (const value of [accountName, user.role, user.createdAt ? new Date(user.createdAt).toLocaleString() : "—"]) {
+      const cell = document.createElement("td");
+      cell.textContent = value;
+      row.appendChild(cell);
+    }
+    adminUsersBody.appendChild(row);
+  }
+}
+
+function adminRenderLogs(logs) {
+  adminLogsBody.replaceChildren();
+  if (!logs.length) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 4;
+    cell.textContent = "No activity recorded yet.";
+    row.appendChild(cell);
+    adminLogsBody.appendChild(row);
+    return;
+  }
+  for (const log of logs) {
+    const row = document.createElement("tr");
+    const details = log.details == null ? "" : JSON.stringify(log.details);
+    for (const value of [
+      log.createdAt ? new Date(log.createdAt).toLocaleString() : "",
+      log.username,
+      log.action,
+      details
+    ]) {
+      const cell = document.createElement("td");
+      cell.textContent = value;
+      row.appendChild(cell);
+    }
+    adminLogsBody.appendChild(row);
+  }
+}
+
+async function adminRefreshStatus() {
+  const state = await adminRequest("/api/admin/status");
+  adminRole = state.authenticated ? state.role : null;
+  adminLoginPane.hidden = Boolean(state.authenticated);
+  adminSignedPane.hidden = !state.authenticated;
+  adminSignedNameEl.textContent = state.authenticated ? String(state.role).toUpperCase() : "";
+  adminAccessStateEl.textContent = state.authenticated ? String(state.role).toUpperCase() : "Public dashboard";
+  adminConnectionEl.textContent = state.available ? "ADMIN SERVICE READY" : "DATABASE UNAVAILABLE";
+  for (const element of document.querySelectorAll("[data-admin-owner]")) element.hidden = adminRole !== "owner";
+  if (!state.available) {
+    adminSetMessage(adminLoginMessageEl, "Admin service unavailable: link a Netlify Database.", "error");
+  } else if (!state.ownerConfigured) {
+    adminSetMessage(adminLoginMessageEl, "Owner setup required: configure ADMIN_PASSWORD on the server.", "error");
+  } else if (!state.authenticated) {
+    adminSetMessage(adminLoginMessageEl, "Dashboard is public. Enter the operator password to unlock controls.");
+  }
+  adminSetTab("overview");
+  return state;
+}
+
+async function adminLoadPlayers() {
+  try {
+    const players = await adminRequest("/api/admin/players");
+    adminRenderPlayers(players);
+    adminSetMessage(adminPlayersMessageEl, players.length + " player" + (players.length === 1 ? "" : "s") + " online.");
+  } catch (error) {
+    adminSetMessage(adminPlayersMessageEl, error.message, "error");
+    throw error;
+  }
+}
+
+async function adminLoadUsers() {
+  try {
+    const users = await adminRequest("/api/admin/users");
+    adminRenderUsers(users);
+    adminSetMessage(adminUsersMessageEl, users.length + " admin account" + (users.length === 1 ? "" : "s") + ".");
+  } catch (error) {
+    adminSetMessage(adminUsersMessageEl, error.message, "error");
+    throw error;
+  }
+}
+
+async function adminLoadLogs() {
+  try {
+    const logs = await adminRequest("/api/admin/logs?limit=100");
+    adminRenderLogs(logs);
+    adminSetMessage(adminLogsMessageEl, "Showing " + logs.length + " recent event" + (logs.length === 1 ? "" : "s") + ". The log is append-only.");
+  } catch (error) {
+    adminSetMessage(adminLogsMessageEl, error.message, "error");
+    throw error;
+  }
+}
+
+async function openAdminPanel() {
+  adminPanelEl.classList.add("open");
+  adminPanelEl.setAttribute("aria-hidden", "false");
+  adminSetTab("overview");
+  adminRenderPlayers();
+  try {
+    const state = await adminRefreshStatus();
+    if (!state.authenticated) return;
+    await adminLoadPlayers().catch(() => {});
+    if (adminRole === "owner") {
+      await Promise.all([adminLoadUsers().catch(() => {}), adminLoadLogs().catch(() => {})]);
+    }
+  } catch (error) {
+    adminSetMessage(adminLoginMessageEl, error.message, "error");
+  }
+}
+
+function closeAdminPanel() {
+  adminPanelEl.classList.remove("open");
+  adminPanelEl.setAttribute("aria-hidden", "true");
+}
+
+function toggleAdminPanel() {
+  if (adminPanelEl.classList.contains("open")) closeAdminPanel();
+  else openAdminPanel();
+}
+
+function reconnectAdminSocket() {
+  if (!mpSocket) {
+    if (mpStatus !== "offline") mpJoin();
+    return;
+  }
+  mpLeave();
+  mpJoin();
+}
+
+document.getElementById("adminClose").addEventListener("click", closeAdminPanel);
+adminPanelEl.addEventListener("click", (event) => {
+  if (event.target === adminPanelEl) closeAdminPanel();
+});
+for (const button of document.querySelectorAll("[data-admin-tab]")) {
+  button.addEventListener("click", () => adminSetTab(button.dataset.adminTab));
+}
+document.getElementById("adminRefreshPlayers").addEventListener("click", () => adminLoadPlayers().catch(() => {}));
+document.getElementById("adminRefreshUsers").addEventListener("click", () => adminLoadUsers().catch(() => {}));
+document.getElementById("adminRefreshLogs").addEventListener("click", () => adminLoadLogs().catch(() => {}));
+
+document.getElementById("adminLoginForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const submit = form.querySelector('button[type="submit"]');
+  submit.disabled = true;
+  try {
+    const formData = new FormData(form);
+    await adminRequest("/api/admin/login", {
+      method: "POST",
+      body: JSON.stringify({ password: formData.get("password") })
+    });
+    form.reset();
+    await adminRefreshStatus();
+    adminSetMessage(adminActionMessageEl, "Controls unlocked.", "success");
+    reconnectAdminSocket();
+    await adminLoadPlayers().catch(() => {});
+    if (adminRole === "owner") await Promise.all([adminLoadUsers().catch(() => {}), adminLoadLogs().catch(() => {})]);
+  } catch (error) {
+    adminSetMessage(adminLoginMessageEl, error.message, "error");
+  } finally {
+    submit.disabled = false;
+  }
+});
+
+document.getElementById("adminLogout").addEventListener("click", async () => {
+  try {
+    await adminRequest("/api/admin/logout", { method: "POST" });
+    adminRole = null;
+    await adminRefreshStatus();
+    adminSetMessage(adminLoginMessageEl, "Signed out.");
+    reconnectAdminSocket();
+    adminRenderPlayers();
+  } catch (error) {
+    adminSetMessage(adminActionMessageEl, error.message, "error");
+  }
+});
+
+document.getElementById("adminCreateForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const formData = new FormData(form);
+  try {
+    await adminRequest("/api/admin/users", {
+      method: "POST",
+      body: JSON.stringify({ password: formData.get("password") })
+    });
+    form.reset();
+    adminSetMessage(adminUsersMessageEl, "Admin password added. Share it securely.", "success");
+    await adminLoadUsers();
+    await adminLoadLogs().catch(() => {});
+  } catch (error) {
+    adminSetMessage(adminUsersMessageEl, error.message, "error");
+  }
+});
+
+document.getElementById("adminAnnouncementForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  const input = event.currentTarget.elements.message;
+  const message = input.value.trim();
+  if (!adminRole) {
+    adminSetMessage(adminPlayersMessageEl, "Enter an admin password to broadcast announcements.", "error");
+  } else if (!message || !mpSend("B|" + message)) {
+    adminSetMessage(adminPlayersMessageEl, "Reconnect to the game server before broadcasting.", "error");
+  } else {
+    input.value = "";
+    adminSetMessage(adminPlayersMessageEl, "Sending announcement…");
+  }
+});
+
 function mpSetStatus(s) {
   mpStatus = s; refreshMpUI();
   document.getElementById('onlineGate').style.display = s === 'online' ? 'none' : 'grid';
-  document.getElementById('onlineGateText').textContent = s === 'full' ? 'The room is full. Try again shortly.' : s === 'connecting' ? 'Connecting to the race server… Play resumes automatically when connected.' : 'Connection lost. An internet connection is required to play. Reconnecting…';
+  document.getElementById('onlineGateText').textContent = s === 'full' ? 'The room is full. Try again shortly.' : s === 'connecting' ? 'Connecting to the race server… Play resumes automatically when connected.' : mpKicked ? 'You were removed from the multiplayer room. Retry when you are ready.' : 'Connection lost. An internet connection is required to play. Reconnecting…';
 }
 
 function mpSend(msg) {
@@ -4236,10 +4699,17 @@ function mpJoin() {
     }
   });
 
-  sock.addEventListener("close", () => {
+  sock.addEventListener("close", (event) => {
     if (mpSocket !== sock) return;
     mpPid = 0;
     mpClearPeers();
+    if (event.code === 4001) {
+      mpSocket = null;
+      mpKicked = true;
+      mpSetStatus("error");
+      showToast("You were removed from the multiplayer room.");
+      return;
+    }
     retry();
   });
 
@@ -4270,6 +4740,7 @@ function mpHandle(data) {
   if (tag === 81 /* Q — identify */) { mpSend("C|" + mpName.replace(/[|:]/g, "") + "|" + carIdx + "|" + mpTrack); return; }
   if (tag === 73 /* I — your pid */) {
     mpRetryN = 0;
+    mpKicked = false;
     mpPid = Number(data.slice(2)) || 0;
     mpSetStatus("online");
     // Reconnection preserves the selected game mode.
@@ -4281,6 +4752,22 @@ function mpHandle(data) {
     const rest = data.slice(2);
     const bar = rest.indexOf("|");
     if (bar > 0) mpVoiceHandle(Number(rest.slice(0, bar)) | 0, rest.slice(bar + 1));
+    return;
+  }
+  if (tag === 88 /* X — admin response */) {
+    const message = data.slice(2);
+    adminSetMessage(adminActionMessageEl, message, /success|sent|removed/i.test(message) ? "success" : "error");
+    if (/sign-in is required/i.test(message)) {
+      adminRole = null;
+      adminRefreshStatus().catch((error) => adminSetMessage(adminLoginMessageEl, error.message, "error"));
+      adminRenderPlayers();
+    }
+    if (adminPanelEl.classList.contains("open") && adminRole === "owner") adminLoadLogs().catch(() => {});
+    showToast(mpEsc(message));
+    return;
+  }
+  if (tag === 66 /* B — server announcement */) {
+    showToast("<b>SERVER ANNOUNCEMENT</b><br>" + mpEsc(data.slice(2)), 5000);
     return;
   }
   if (tag === 70 /* F — full */) {
@@ -4320,6 +4807,7 @@ function mpApplyRoster(data) {
   for (const pid of [...mpVoice.keys()]) if (!next.has(pid)) mpVoiceClose(pid);
   mpRoster = next;
   refreshMpUI();
+  adminRenderPlayers();
   // a player joining/leaving the strip can shuffle the grid: re-stage if my slot moved
   if (scene === "mp" && mpTrack === "drag" && dragRun.state === "staging" && mpDragRank() !== mpDragSlot) mpStageDrag();
 }
@@ -4666,6 +5154,7 @@ function loadMpName() {
   } catch (e) { openNameGate(); }
 }
 document.getElementById('onlineRetry').addEventListener('click', () => {
+  mpKicked = false;
   mpLeave(); mpJoin();
 });
 window.addEventListener('online', () => { if (!mpSocket) mpJoin(); });

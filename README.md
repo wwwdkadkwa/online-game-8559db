@@ -12,6 +12,8 @@ Use Node.js 24+, run `npm install`, then `npx netlify-cli@^27.17.0 dev` with the
 
 Netlify publishes `public` and detects `netlify/server/index.mjs` automatically. No frontend build step is required. Multiplayer uses the site's `/ws` endpoint with secure WebSockets under HTTPS. Connection retries use exponential backoff. Active player connections exist for the lifetime of the server process; progress persists in the database.
 
+The F2 control center is open to view, but moderation requires a password. Configure the server-only `ADMIN_PASSWORD` environment variable (8–128 characters) to bootstrap the owner; there is no username field. Link a Netlify Database so admin passwords, 12-hour HttpOnly sessions, and append-only admin activity logs can persist. The owner can add up to 10 distinct admin passwords from the dashboard; admins can view the live player list, remove players, and broadcast announcements. The player list reflects the current server instance only.
+
 The follow-up migration removes the unused player account/session tables and preserves browser-specific saves.
 
 Player motion retains the supplied game's client-reported model. This is a casual multiplayer game, not a server-authoritative competitive economy. Voice retains the supplied peer-to-peer implementation and depends on microphone permission and network compatibility. Players on separate server instances do not share a room; a shared relay would be required before scaling to multiple instances.
